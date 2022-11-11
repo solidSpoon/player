@@ -1,26 +1,19 @@
-html,
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    margin: 0;
 }
-
-a {
-  color: inherit;
-  text-decoration: none;
+.container {
+    display: grid;
+    grid-template-columns: 60vw 40vw;
+    grid-template-rows: 60vh 40vh;
 }
-
-* {
-  box-sizing: border-box;
+.subtitle {
+    background: #b03532;
+    grid-column: 2 / span 1;
+    grid-row: 1 / span 2;
 }
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+.player{
+    height: 100%;
+}
+p {
+    background-color: black;
 }
