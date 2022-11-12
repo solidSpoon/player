@@ -16,7 +16,7 @@ const Player = ({playerRef, currentTimeState}) => {
             width="100%"
             height="100%"
             onProgress={(progress) => {
-                setCurrentTime(progress.playedSeconds);
+                setCurrentTime(progress.playedSeconds.toFixed(3));
             }}
         />
     </>;
