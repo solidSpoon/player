@@ -1,5 +1,5 @@
 import style from './Subtitle.module.css'
-import {useEffect, useRef, useState} from "react";
+import {useEffect} from "react";
 import {isVisible} from "../lib/isVisible";
 import searchSubtitle from "../lib/searchSubtitle";
 
@@ -18,17 +18,6 @@ const Subtitle = ({playerRef, subtitles, currentTimeState, currentSubtleState}) 
                 id={"Subtitle-subt" + item.key}
                 className={style.subtitleItem}
                 onClick={(event) => {
-                    // const target = event.currentTarget;
-                    // const icon = target.getElementsByClassName(style.subtitleItemIcon)[0];
-                    // console.log(currentSubtitle)
-                    // const lastIcon = currentSubtitle.subtleDiv.getElementsByClassName(style.subtitleItemIcon)[0];
-                    // icon.style.visibility = "visible";
-                    // lastIcon.style.visibility = "hidden"
-                    // const searchSubtitle1 = searchSubtitle(subtitles, item.timeStart);
-                    // if (searchSubtitle1 == undefined) {
-                    //     console.log('sear'+item.timeStart);
-                    // }
-                    // setCurrentSubtitle(searchSubtitle1)
                     playerRef.current.seekTo(item.timeStart);
                 }
                 }>
@@ -47,13 +36,7 @@ const Subtitle = ({playerRef, subtitles, currentTimeState, currentSubtleState}) 
                 subtitles[i - 1].next = subtitles[i];
                 subtitles[i].prev = subtitles[i - 1];
             }
-            const elementById = document.getElementById("Subtitle-subt" + subtitles[i].key);
-            if (elementById == undefined) {
-                console.log("ud" + subtitles[i].key)
-            } else {
-                console.log("no")
-            }
-            subtitles[i].subtleDiv = elementById;
+            subtitles[i].subtleDiv = document.getElementById("Subtitle-subt" + subtitles[i].key);
         }
     }, [])
     useEffect(() => {

@@ -19,13 +19,10 @@ export default function Home() {
         }
     }
     let tc;
+    let time = Date.now();
     // useEffect(() => tc = currentSubtitle, [currentSubtitle])
     const onA = () => {
-        let prev = currentSubtitle.prev;
-        if (prev === undefined) {
-            prev = currentSubtitle;
-        }
-        textInput.current.seekTo(prev.timeStart);
+        textInput.current.seekTo(currentSubtitle.prev.timeStart);
 
     }
     const onD = () => {
@@ -37,7 +34,7 @@ export default function Home() {
             events={{
                 onA, onD,
             }}
-            needFocusing
+            needFocusing={false}
         >
             <div className='container'>
                 <div className='player'>
