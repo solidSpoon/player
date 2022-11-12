@@ -6,7 +6,7 @@ import searchSubtitle from "../lib/searchSubtitle";
 const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleState}) => {
     const [currentTime, setCurrentTime] = currentTimeState;
     const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
-    const [subtitles,setSubtitles] = subtitlesState;
+    const [subtitles, setSubtitles] = subtitlesState;
     let lastSubtitle;
     const subtitleItems = subtitles.map((item) => {
             if (lastSubtitle !== undefined) {
@@ -19,7 +19,7 @@ const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleSta
                 id={"Subtitle-subt" + item.key}
                 className={style.subtitleItem}
                 onClick={(event) => {
-                    playerRef.current.seekTo(item.timeStart);
+                    playerRef.current.seekTo(item.timeStart, 'seconds');
                 }
                 }>
                 <div className={style.subtitleItemIcon}>

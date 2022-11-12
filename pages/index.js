@@ -33,7 +33,7 @@ export default function Home() {
         const prev = current.prevItem ? current.prevItem : current;
         setTime(Date.now)
         setText(prev)
-        playerRef.current.seekTo(prev.timeStart);
+        playerRef.current.seekTo(prev.timeStart, 'seconds');
 
     }
     const onRight = () => {
@@ -44,7 +44,7 @@ export default function Home() {
         const next = current.nextItem ? current.nextItem : current;
         setTime(Date.now)
         setText(next)
-        playerRef.current.seekTo(next.timeStart);
+        playerRef.current.seekTo(next.timeStart, 'seconds');
     }
     const onDown = () => {
         onS();
@@ -52,7 +52,7 @@ export default function Home() {
     const onS = () => {
         const current = Date.now() - time > 1000 ? currentSubtitle : text;
         setTime(Date.now)
-        playerRef.current.seekTo(current.timeStart);
+        playerRef.current.seekTo(current.timeStart, 'seconds');
     }
     const onW = () => {
         onSpace();
