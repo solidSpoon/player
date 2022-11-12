@@ -5,6 +5,8 @@ import MainSubtitle from "../components/MainSubt";
 import Keyevent from "react-keyevent";
 import UploadPhoto from "../components/UplodeButton";
 import {createRoot} from 'react-dom/client';
+import parseSrtSubtitles from "../lib/parseSrt";
+import axios from "axios";
 
 export default function Home() {
     const playerRef = useRef(null)
@@ -15,6 +17,8 @@ export default function Home() {
     const [videoFile, setVideoFile] = videoFileState;
     const playingState = useState(true);
     const [playing, setPlaying] = playingState;
+    const srcState = useState();
+    const [srcUrl, setSrcUrl] = srcState;
     const subtitles = [];
     for (let i = 0; i < 200; i++) {
         subtitles[i] = {
@@ -70,7 +74,6 @@ export default function Home() {
         }
     }
     useEffect(() => {
-        console.log(videoFile)
         if (videoFile !== undefined) {
             const newEle =
                 <Player
@@ -84,6 +87,37 @@ export default function Home() {
             root.render(newEle);
         }
     }, [videoFile])
+
+
+    useEffect(() => {
+        if (srcUrl !== undefined) {
+
+            axios
+                .get(srcUrl)
+                .then(function (response) {
+                    updateSubtitle(response.data)
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+    }, [srcUrl])
+
+    const updateSubtitle = (str)=>{
+        console.log(str)
+        const srtSubtitles = parseSrtSubtitles(str);
+        const newEle =
+            <Subtitle
+                playerRef={playerRef}
+                subtitles={srtSubtitles}
+                currentTimeState={currentTimeState}
+                currentSubtleState={currentSubtleState}/>
+        const container = document.getElementById("subtitle-id");
+        const root = createRoot(container); // createRoot(container!) if you use TypeScript
+        root.render(newEle);
+    }
+
+
     return (
         <Keyevent
             className="TopSide"
@@ -101,7 +135,7 @@ export default function Home() {
                         playingState={playingState}
                     />
                 </div>
-                <div className='subtitle'>
+                <div className='subtitle' id={"subtitle-id"}>
                     <Subtitle
                         playerRef={playerRef}
                         subtitles={subtitles}
@@ -110,7 +144,7 @@ export default function Home() {
                 </div>
                 <div className='underline-subtitle'>
                     <MainSubtitle currentSubtleState={currentSubtleState}/>
-                    <UploadPhoto fileState={videoFileState}/>
+                    <UploadPhoto fileState={videoFileState} srcState={srcState}/>
                 </div>
             </div>
         </Keyevent>

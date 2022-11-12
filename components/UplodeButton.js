@@ -8,27 +8,37 @@ export default class UploadPhoto extends Component {
         }
         this.fileInputEl = React.createRef();
         [this.fileState, this.setFileState] = props.fileState;
+        [this.srcUrl, this.setSrcUrl] = props.srcState;
     }
 
     handlePhoto = async (event) => {
         const files = [...event.target.files];
         if (files.length === 0) return;
         await this.setState({submitLoading: true})
-        let result = await Promise.all(
-            files.map(file => {
-                console.log(file)
-                let url = null;
-                if (window.createObjectURL !== undefined) {
-                    url = window.createObjectURL(file)
-                } else if (window.URL !== undefined) {
-                    url = window.URL.createObjectURL(file)
-                } else if (window.webkitURL !== undefined) {
-                    url = window.webkitURL.createObjectURL(file)
-                }
-                return url;
-            })
-        );
-        this.setFileState(result[0])  //现在你就可以根据这个结果做你想做的事了，通过上面的createObjectURL方法处理过，这个result里面的url你是可以直接放到img标签里面的src属性上了，就可以展示出来了。
+
+        files.forEach((file, i) => {
+            console.log(file);
+            const isSrt = file.name.endsWith("srt");
+            console.log(file.name + isSrt);
+            let url = this.getFileUrl(file);
+            if (isSrt) {
+                this.setSrcUrl(url);
+            } else {
+                this.setFileState(url);
+            }
+        })
+    }
+
+    getFileUrl(file) {
+        let url = null;
+        if (window.createObjectURL !== undefined) {
+            url = window.createObjectURL(file)
+        } else if (window.URL !== undefined) {
+            url = window.URL.createObjectURL(file)
+        } else if (window.webkitURL !== undefined) {
+            url = window.webkitURL.createObjectURL(file)
+        }
+        return url;
     }
 
     render() {
@@ -37,7 +47,7 @@ export default class UploadPhoto extends Component {
                 <input
                     type="file"
                     ref={this.fileInputEl}    //挂载ref
-                    accept=".mp4,.jpeg,.png"    //限制文件类型
+                    accept=".mp4,.srt,.png"    //限制文件类型
                     hidden    //隐藏input
                     onChange={(event) => this.handlePhoto(event)}
                 />
