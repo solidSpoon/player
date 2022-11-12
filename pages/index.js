@@ -3,12 +3,16 @@ import Player from "../components/Player";
 import Subtitle from "../components/Subtitle";
 import MainSubtitle from "../components/MainSubt";
 import Keyevent from "react-keyevent";
+import UploadPhoto from "../components/UplodeButton";
+import { createRoot } from 'react-dom/client';
 
 export default function Home() {
-    const textInput = useRef(null)
+    const playerRef = useRef(null)
     const currentTimeState = useState(0);
     const currentSubtleState = useState();
     const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
+    const videoFileState = useState();
+    const [videoFile, setVideoFile] = videoFileState;
     const subtitles = [];
     for (let i = 0; i < 200; i++) {
         subtitles[i] = {
@@ -18,16 +22,30 @@ export default function Home() {
             text: "hello world " + i
         }
     }
-    let tc;
-    let time = Date.now();
-    // useEffect(() => tc = currentSubtitle, [currentSubtitle])
     const onA = () => {
-        textInput.current.seekTo(currentSubtitle.prev.timeStart);
+        playerRef.current.seekTo(currentSubtitle.prev.timeStart);
 
     }
     const onD = () => {
-        textInput.current.seekTo(currentSubtitle.next.timeStart);
+        playerRef.current.seekTo(currentSubtitle.next.timeStart);
     }
+
+
+    useEffect(() => {
+        console.log(videoFile)
+        if (videoFile !== undefined) {
+            const newEle =
+                <Player
+                    playerRef={playerRef}
+                    currentTimeState={currentTimeState}
+                    videoFile={videoFile}
+                    id={"player-id"}
+                />;
+            const container = document.getElementById("player-id");
+            const root = createRoot(container); // createRoot(container!) if you use TypeScript
+            root.render(newEle);
+        }
+    }, [videoFile])
     return (
         <Keyevent
             className="TopSide"
@@ -37,20 +55,23 @@ export default function Home() {
             needFocusing={false}
         >
             <div className='container'>
-                <div className='player'>
+                <div className='player' id={"player-id"}>
                     <Player
-                        playerRef={textInput}
-                        currentTimeState={currentTimeState}/>
+                        playerRef={playerRef}
+                        currentTimeState={currentTimeState}
+                        videoFile={videoFile}
+                    />
                 </div>
                 <div className='subtitle'>
                     <Subtitle
-                        playerRef={textInput}
+                        playerRef={playerRef}
                         subtitles={subtitles}
                         currentTimeState={currentTimeState}
                         currentSubtleState={currentSubtleState}/>
                 </div>
                 <div className='underline-subtitle'>
                     <MainSubtitle currentSubtleState={currentSubtleState}/>
+                    <UploadPhoto fileState={videoFileState}/>
                 </div>
             </div>
         </Keyevent>

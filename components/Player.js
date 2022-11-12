@@ -3,13 +3,13 @@ import React, {useEffect, useRef, useState} from 'react'
 import style from './Player.module.css'
 
 
-const Player = ({playerRef, currentTimeState}) => {
+const Player = ({playerRef, currentTimeState, videoFile}) => {
     const [player, setPlayer] = useState()
     const [currentTime, setCurrentTime] = currentTimeState;
     let reactPlayer = <>
         <ReactPlayer
             ref={playerRef}
-            url='https://www.youtube.com/watch?v=ysz5S6PUM-U'
+            url={videoFile? videoFile:""}
             className={"react-player" + style.player}
             playing
             controls
