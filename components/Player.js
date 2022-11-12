@@ -3,21 +3,25 @@ import React, {useEffect, useRef, useState} from 'react'
 import style from './Player.module.css'
 
 
-const Player = ({playerRef, currentTimeState, videoFile}) => {
+const Player = ({playerRef, currentTimeState, videoFile, playingState}) => {
     const [player, setPlayer] = useState()
     const [currentTime, setCurrentTime] = currentTimeState;
+    const [playing, setPlaying] = playingState
     let reactPlayer = <>
         <ReactPlayer
+            id="react-player-id"
             ref={playerRef}
-            url={videoFile? videoFile:""}
+            url={videoFile ? videoFile : ""}
             className={"react-player" + style.player}
-            playing
+            playing={playing}
             controls
             width="100%"
             height="100%"
             onProgress={(progress) => {
                 setCurrentTime(progress.playedSeconds.toFixed(3));
             }}
+            onPlay={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}
         />
     </>;
 

@@ -13,6 +13,8 @@ export default function Home() {
     const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
     const videoFileState = useState();
     const [videoFile, setVideoFile] = videoFileState;
+    const playingState = useState(true);
+    const [playing, setPlaying] = playingState;
     const subtitles = [];
     for (let i = 0; i < 200; i++) {
         subtitles[i] = {
@@ -25,6 +27,9 @@ export default function Home() {
     const [time, setTime] = useState(Date.now)
     const [text, setText] = useState()
 
+    const onLeft = () => {
+        onA()
+    }
     const onA = () => {
         const current = Date.now() - time > 1000 ? currentSubtitle : text;
         const prev = current.prevItem ? current.prevItem : current;
@@ -33,6 +38,9 @@ export default function Home() {
         playerRef.current.seekTo(prev.timeStart);
 
     }
+    const onRight = () => {
+        onD()
+    }
     const onD = () => {
         const current = Date.now() - time > 1000 ? currentSubtitle : text;
         const next = current.nextItem ? current.nextItem : current;
@@ -40,8 +48,27 @@ export default function Home() {
         setText(next)
         playerRef.current.seekTo(next.timeStart);
     }
-
-
+    const onDown = () => {
+        onS();
+    }
+    const onS = () => {
+        const current = Date.now() - time > 1000 ? currentSubtitle : text;
+        setTime(Date.now)
+        playerRef.current.seekTo(current.timeStart);
+    }
+    const onW = () => {
+        onSpace();
+    }
+    const onUp = () => {
+        onSpace();
+    }
+    const onSpace = () => {
+        if (playing) {
+            document.querySelector('video').pause();
+        } else {
+            document.querySelector('video').play();
+        }
+    }
     useEffect(() => {
         console.log(videoFile)
         if (videoFile !== undefined) {
@@ -50,7 +77,7 @@ export default function Home() {
                     playerRef={playerRef}
                     currentTimeState={currentTimeState}
                     videoFile={videoFile}
-                    id={"player-id"}
+                    playingState={playingState}
                 />;
             const container = document.getElementById("player-id");
             const root = createRoot(container); // createRoot(container!) if you use TypeScript
@@ -61,7 +88,7 @@ export default function Home() {
         <Keyevent
             className="TopSide"
             events={{
-                onA, onD,
+                onA, onD, onS, onLeft, onRight, onDown, onSpace, onUp, onW
             }}
             needFocusing={false}
         >
@@ -71,6 +98,7 @@ export default function Home() {
                         playerRef={playerRef}
                         currentTimeState={currentTimeState}
                         videoFile={videoFile}
+                        playingState={playingState}
                     />
                 </div>
                 <div className='subtitle'>
