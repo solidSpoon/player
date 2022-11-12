@@ -19,15 +19,9 @@ export default function Home() {
     const [playing, setPlaying] = playingState;
     const srcState = useState();
     const [srcUrl, setSrcUrl] = srcState;
-    const subtitles = [];
-    for (let i = 0; i < 200; i++) {
-        subtitles[i] = {
-            key: i,
-            timeStart: i,
-            timeEnd: (i + 1),
-            text: "hello world " + i
-        }
-    }
+
+    const subtitleState = useState([]);
+    const [subtitles, setSubtitles] = subtitleState;
     const [time, setTime] = useState(Date.now)
     const [text, setText] = useState()
 
@@ -101,23 +95,29 @@ export default function Home() {
                     console.log(error);
                 });
         }
-    }, [srcUrl])
+    }, [srcUrl]);
 
-    const updateSubtitle = (str)=>{
-        console.log(str)
+    const updateSubtitle = (str) => {
         const srtSubtitles = parseSrtSubtitles(str);
+        srtSubtitles.forEach((v)=>{
+            console.log(v);
+        })
+        setSubtitles(srtSubtitles)
+    };
+
+    useEffect(() => {
         const newEle =
             <Subtitle
                 playerRef={playerRef}
-                subtitles={srtSubtitles}
+                subtitlesState={subtitleState}
                 currentTimeState={currentTimeState}
-                currentSubtleState={currentSubtleState}/>
+                currentSubtleState={currentSubtleState}
+                id={Date.now()}
+            />
         const container = document.getElementById("subtitle-id");
         const root = createRoot(container); // createRoot(container!) if you use TypeScript
         root.render(newEle);
-    }
-
-
+    }, [subtitles]);
     return (
         <Keyevent
             className="TopSide"
@@ -138,7 +138,7 @@ export default function Home() {
                 <div className='subtitle' id={"subtitle-id"}>
                     <Subtitle
                         playerRef={playerRef}
-                        subtitles={subtitles}
+                        subtitlesState={subtitleState}
                         currentTimeState={currentTimeState}
                         currentSubtleState={currentSubtleState}/>
                 </div>

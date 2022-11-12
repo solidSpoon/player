@@ -3,9 +3,10 @@ import {useEffect} from "react";
 import {isVisible} from "../lib/isVisible";
 import searchSubtitle from "../lib/searchSubtitle";
 
-const Subtitle = ({playerRef, subtitles, currentTimeState, currentSubtleState}) => {
+const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleState}) => {
     const [currentTime, setCurrentTime] = currentTimeState;
     const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
+    const [subtitles,setSubtitles] = subtitlesState;
     let lastSubtitle;
     const subtitleItems = subtitles.map((item) => {
             if (lastSubtitle !== undefined) {
