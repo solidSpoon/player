@@ -9,8 +9,8 @@ const Subtitle = ({playerRef, subtitles, currentTimeState, currentSubtleState}) 
     let lastSubtitle;
     const subtitleItems = subtitles.map((item) => {
             if (lastSubtitle !== undefined) {
-                lastSubtitle.next = item;
-                item.prev = lastSubtitle;
+                lastSubtitle.nextItem = item;
+                item.prevItem = lastSubtitle;
             }
             lastSubtitle = item;
             return <div
@@ -33,8 +33,8 @@ const Subtitle = ({playerRef, subtitles, currentTimeState, currentSubtleState}) 
     useEffect(() => {
         for (let i = 0; i < subtitles.length; ++i) {
             if (i > 1) {
-                subtitles[i - 1].next = subtitles[i];
-                subtitles[i].prev = subtitles[i - 1];
+                subtitles[i - 1].nextItem = subtitles[i];
+                subtitles[i].prevItem = subtitles[i - 1];
             }
             subtitles[i].subtleDiv = document.getElementById("Subtitle-subt" + subtitles[i].key);
         }

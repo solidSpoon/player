@@ -4,7 +4,7 @@ import Subtitle from "../components/Subtitle";
 import MainSubtitle from "../components/MainSubt";
 import Keyevent from "react-keyevent";
 import UploadPhoto from "../components/UplodeButton";
-import { createRoot } from 'react-dom/client';
+import {createRoot} from 'react-dom/client';
 
 export default function Home() {
     const playerRef = useRef(null)
@@ -22,12 +22,23 @@ export default function Home() {
             text: "hello world " + i
         }
     }
+    const [time, setTime] = useState(Date.now)
+    const [text, setText] = useState()
+
     const onA = () => {
-        playerRef.current.seekTo(currentSubtitle.prev.timeStart);
+        const current = Date.now() - time > 1000 ? currentSubtitle : text;
+        const prev = current.prevItem ? current.prevItem : current;
+        setTime(Date.now)
+        setText(prev)
+        playerRef.current.seekTo(prev.timeStart);
 
     }
     const onD = () => {
-        playerRef.current.seekTo(currentSubtitle.next.timeStart);
+        const current = Date.now() - time > 1000 ? currentSubtitle : text;
+        const next = current.nextItem ? current.nextItem : current;
+        setTime(Date.now)
+        setText(next)
+        playerRef.current.seekTo(next.timeStart);
     }
 
 
