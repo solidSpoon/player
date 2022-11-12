@@ -18,18 +18,18 @@ export default function Home() {
             text: "hello world " + i
         }
     }
+    let tc;
+    // useEffect(() => tc = currentSubtitle, [currentSubtitle])
     const onA = () => {
-        // if (currentSubtitle.prev !== undefined) {
-        const data = currentSubtitle;
-        console.log(data)
-        data.prev.subtleDiv.click();
-        // }
+        let prev = currentSubtitle.prev;
+        if (prev === undefined) {
+            prev = currentSubtitle;
+        }
+        textInput.current.seekTo(prev.timeStart);
+
     }
     const onD = () => {
-        // if (currentSubtitle.prev !== undefined) {
-        console.log(currentSubtitle)
-        currentSubtitle.next.subtleDiv.click();
-        // }
+        textInput.current.seekTo(currentSubtitle.next.timeStart);
     }
     return (
         <Keyevent

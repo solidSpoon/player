@@ -18,13 +18,17 @@ const Subtitle = ({playerRef, subtitles, currentTimeState, currentSubtleState}) 
                 id={"Subtitle-subt" + item.key}
                 className={style.subtitleItem}
                 onClick={(event) => {
-                    const target = event.currentTarget;
-                    const icon = target.getElementsByClassName(style.subtitleItemIcon)[0];
-                    console.log(currentSubtitle )
-                    const lastIcon = currentSubtitle.subtleDiv.getElementsByClassName(style.subtitleItemIcon)[0];
-                    icon.style.visibility = "visible";
-                    lastIcon.style.visibility = "hidden"
-                    setCurrentSubtitle(searchSubtitle(subtitles, item.timeStart))
+                    // const target = event.currentTarget;
+                    // const icon = target.getElementsByClassName(style.subtitleItemIcon)[0];
+                    // console.log(currentSubtitle)
+                    // const lastIcon = currentSubtitle.subtleDiv.getElementsByClassName(style.subtitleItemIcon)[0];
+                    // icon.style.visibility = "visible";
+                    // lastIcon.style.visibility = "hidden"
+                    // const searchSubtitle1 = searchSubtitle(subtitles, item.timeStart);
+                    // if (searchSubtitle1 == undefined) {
+                    //     console.log('sear'+item.timeStart);
+                    // }
+                    // setCurrentSubtitle(searchSubtitle1)
                     playerRef.current.seekTo(item.timeStart);
                 }
                 }>
@@ -43,13 +47,20 @@ const Subtitle = ({playerRef, subtitles, currentTimeState, currentSubtleState}) 
                 subtitles[i - 1].next = subtitles[i];
                 subtitles[i].prev = subtitles[i - 1];
             }
-            subtitles[i].subtleDiv = document.getElementById("Subtitle-subt" + subtitles[i].key);
+            const elementById = document.getElementById("Subtitle-subt" + subtitles[i].key);
+            if (elementById == undefined) {
+                console.log("ud" + subtitles[i].key)
+            } else {
+                console.log("no")
+            }
+            subtitles[i].subtleDiv = elementById;
         }
     }, [])
     useEffect(() => {
         const parent = document.getElementById("Subtitle-subt");
-        const find = searchSubtitle(subtitles, currentTime, currentSubtitle);
-        if (find === undefined || find === currentSubtitle) {
+        const subtitle = currentSubtitle;
+        const find = searchSubtitle(subtitles, currentTime, subtitle);
+        if (find === undefined || find === subtitle) {
             return;
         }
         if (find.subtleDiv === undefined) {
@@ -58,8 +69,8 @@ const Subtitle = ({playerRef, subtitles, currentTimeState, currentSubtleState}) 
         const child = find.subtleDiv;
         const icon = child.getElementsByClassName(style.subtitleItemIcon)[0];
         icon.style.visibility = "visible";
-        if (currentSubtitle !== undefined) {
-            currentSubtitle.subtleDiv
+        if (subtitle !== undefined) {
+            subtitle.subtleDiv
                 .getElementsByClassName(style.subtitleItemIcon)[0]
                 .style.visibility = "hidden";
         }
