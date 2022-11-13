@@ -2,11 +2,15 @@ import style from './Subtitle.module.css'
 import {useEffect} from "react";
 import {isVisible} from "../lib/isVisible";
 import searchSubtitle from "../lib/searchSubtitle";
+import SearchSubtitle from "../lib/searchSubtitle";
 
-const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleState}) => {
+const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleState, jumpTimeState, pushTimeState, jumpTextState}) => {
     const [currentTime, setCurrentTime] = currentTimeState;
     const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
     const [subtitles, setSubtitles] = subtitlesState;
+    const [jumpTime,setJumpTime] = jumpTimeState;
+    const [pushTime, setPushTime]= pushTimeState;
+    const [jumpText, setJumpText] = jumpTextState;
     let lastSubtitle;
     const subtitleItems = subtitles.map((item) => {
             if (lastSubtitle !== undefined) {
@@ -19,6 +23,9 @@ const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleSta
                 id={"Subtitle-subt" + item.key}
                 className={style.subtitleItem}
                 onClick={(event) => {
+                    setPushTime(Date.now());
+                    setJumpTime(item.timeStart);
+                    setJumpText(SearchSubtitle(subtitles,item.timeStart, currentSubtitle))
                     playerRef.current.seekTo(item.timeStart, 'seconds');
                 }
                 }>
@@ -43,7 +50,8 @@ const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleSta
     useEffect(() => {
         const parent = document.getElementById("Subtitle-subt");
         const subtitle = currentSubtitle;
-        const find = searchSubtitle(subtitles, currentTime, subtitle);
+        const finalCurrentTime = Date.now() - pushTime > 600 ? currentTime : jumpTime;
+        const find = searchSubtitle(subtitles, finalCurrentTime, subtitle);
         if (find === undefined || find === subtitle) {
             return;
         }
@@ -63,7 +71,7 @@ const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleSta
             parent.scrollTo(0, child.offsetTop - 50)
         }
 
-    }, [currentTime]);
+    }, [currentTime, jumpTime]);
     return (
         <div className={style.subtitleBox} id={"Subtitle-subt"}>
             {subtitleItems}

@@ -19,20 +19,25 @@ export default function Home() {
     const [playing, setPlaying] = playingState;
     const srcState = useState();
     const [srcUrl, setSrcUrl] = srcState;
-
     const subtitleState = useState([]);
     const [subtitles, setSubtitles] = subtitleState;
-    const [time, setTime] = useState(Date.now)
-    const [text, setText] = useState()
+
+    const pushTimeState = useState(Date.now);
+    const [time, setTime] = pushTimeState;
+    const jumpTextState = useState();
+    const [text, setText] = jumpTextState;
+    const jumpTimeState = useState();
+    const [jumpTime, setJumpTime] = jumpTimeState;
 
     const onLeft = () => {
-        onA()
+        onA();
     }
     const onA = () => {
         const current = Date.now() - time > 1000 ? currentSubtitle : text;
         const prev = current.prevItem ? current.prevItem : current;
-        setTime(Date.now)
-        setText(prev)
+        setTime(Date.now);
+        setText(prev);
+        setJumpTime(prev.timeStart);
         playerRef.current.seekTo(prev.timeStart, 'seconds');
 
     }
@@ -42,8 +47,9 @@ export default function Home() {
     const onD = () => {
         const current = Date.now() - time > 1000 ? currentSubtitle : text;
         const next = current.nextItem ? current.nextItem : current;
-        setTime(Date.now)
-        setText(next)
+        setTime(Date.now);
+        setText(next);
+        setJumpTime(next.timeStart);
         playerRef.current.seekTo(next.timeStart, 'seconds');
     }
     const onDown = () => {
@@ -52,6 +58,7 @@ export default function Home() {
     const onS = () => {
         const current = Date.now() - time > 1000 ? currentSubtitle : text;
         setTime(Date.now)
+        setJumpTime(current.timeStart)
         playerRef.current.seekTo(current.timeStart, 'seconds');
     }
     const onW = () => {
@@ -113,6 +120,9 @@ export default function Home() {
                 currentTimeState={currentTimeState}
                 currentSubtleState={currentSubtleState}
                 id={Date.now()}
+                pushTimeState={pushTimeState}
+                jumpTimeState={jumpTimeState}
+                jumpTextState={jumpTextState}
             />
         const container = document.getElementById("subtitle-id");
         const root = createRoot(container); // createRoot(container!) if you use TypeScript
@@ -140,7 +150,11 @@ export default function Home() {
                         playerRef={playerRef}
                         subtitlesState={subtitleState}
                         currentTimeState={currentTimeState}
-                        currentSubtleState={currentSubtleState}/>
+                        currentSubtleState={currentSubtleState}
+                        jumpTimeState={jumpTimeState}
+                        pushTimeState={pushTimeState}
+                        jumpTextState={jumpTextState}
+                    />
                 </div>
                 <div className='underline-subtitle'>
                     <MainSubtitle currentSubtleState={currentSubtleState}/>
