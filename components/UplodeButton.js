@@ -1,4 +1,5 @@
 import React, {Component, Fragment} from 'react';
+import style from './UplodeButtom.module.css'
 
 export default class UploadPhoto extends Component {
     constructor(props) {
@@ -46,21 +47,18 @@ export default class UploadPhoto extends Component {
             <Fragment>
                 <input
                     type="file"
+                    multiple
                     ref={this.fileInputEl}    //挂载ref
-                    accept=".mp4,.srt,.png"    //限制文件类型
+                    accept=".mp4,.srt"    //限制文件类型
                     hidden    //隐藏input
                     onChange={(event) => this.handlePhoto(event)}
                 />
-                <a
+                <a className={style.button}
                     onClick={() => {
                         this.fileInputEl.current.click()		//当点击a标签的时候触发事件
                     }}
-                    //自己看心情改样式吧
-                    style={{
-                        height: '39px',
-                        lineHeight: '39px',
-                    }}
-                >上传照片
+                >
+                    打开文件
                 </a>
             </Fragment>
         )

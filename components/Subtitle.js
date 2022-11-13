@@ -60,7 +60,7 @@ const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleSta
         }
         setCurrentSubtitle(find)
         if (!isVisible(child)) {
-            parent.scrollTo(0, child.offsetTop - 100)
+            parent.scrollTo(0, child.offsetTop - 50)
         }
 
     }, [currentTime]);

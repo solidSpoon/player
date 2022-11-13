@@ -16,3 +16,15 @@ body {
 p {
     background-color: black;
 }
+.underline-subtitle {
+    display: flex;
+    flex-direction: column;
+}
+.menu {
+    display: flex;
+    margin-top: auto;
+    margin-bottom: 4vh;
+    flex-direction: row-reverse;
+    padding-right: 1vw;
+    /*align-items: flex-end;*/
+}

@@ -6,12 +6,8 @@ const MainSubtitle = ({currentSubtleState}) => {
 
     return (
         <div className={style.mainSubtitleContainer}>
-            <div className={style.blank}></div>
             <div className={style.source}>{currentSubtitle ? currentSubtitle.text : ''}</div>
             <div className={style.dest}>{currentSubtitle ? currentSubtitle.text : ''}</div>
-            {/*<div className={style.menu}>*/}
-            {/*    /!*<UploadPhoto/>*!/*/}
-            {/*</div>*/}
         </div>
     )
 }

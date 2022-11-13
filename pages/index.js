@@ -99,7 +99,7 @@ export default function Home() {
 
     const updateSubtitle = (str) => {
         const srtSubtitles = parseSrtSubtitles(str);
-        srtSubtitles.forEach((v)=>{
+        srtSubtitles.forEach((v) => {
             console.log(v);
         })
         setSubtitles(srtSubtitles)
@@ -144,7 +144,9 @@ export default function Home() {
                 </div>
                 <div className='underline-subtitle'>
                     <MainSubtitle currentSubtleState={currentSubtleState}/>
-                    <UploadPhoto fileState={videoFileState} srcState={srcState}/>
+                    <div className={'menu'}>
+                        <UploadPhoto fileState={videoFileState} srcState={srcState}/>
+                    </div>
                 </div>
             </div>
         </Keyevent>
