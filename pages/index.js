@@ -7,6 +7,7 @@ import UploadPhoto from "../components/UplodeButton";
 import {createRoot} from 'react-dom/client';
 import parseSrtSubtitles from "../lib/parseSrt";
 import axios from "axios";
+import fillTranslate from "../lib/fillTranslate";
 
 export default function Home() {
     const playerRef = useRef(null)
@@ -106,7 +107,8 @@ export default function Home() {
 
     const updateSubtitle = (str) => {
         const srtSubtitles = parseSrtSubtitles(str);
-        setSubtitles(srtSubtitles)
+        fillTranslate(srtSubtitles, setSubtitles);
+        setSubtitles(srtSubtitles);
     };
 
     const [subtitleRoot, setSubtitleRoot] = useState(null);

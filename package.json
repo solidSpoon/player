@@ -17,6 +17,7 @@
     "react-dom": "18.2.0",
     "react-keyevent": "^1.1.0",
     "react-player": "^2.11.0",
-    "react-smooth-scroll-hook": "^1.3.4"
+    "react-smooth-scroll-hook": "^1.3.4",
+    "tencentcloud-sdk-nodejs": "^4.0.480"
   }
 }
