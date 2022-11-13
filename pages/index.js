@@ -106,13 +106,20 @@ export default function Home() {
 
     const updateSubtitle = (str) => {
         const srtSubtitles = parseSrtSubtitles(str);
-        srtSubtitles.forEach((v) => {
-            console.log(v);
-        })
         setSubtitles(srtSubtitles)
     };
 
+    const [subtitleRoot, setSubtitleRoot] = useState(null);
     useEffect(() => {
+        if (subtitles === undefined) {
+            return;
+        }
+        let root = subtitleRoot;
+        if (root === null) {
+            const container = document.getElementById("subtitle-id");
+            root = createRoot(container);
+            setSubtitleRoot(root);
+        }
         const newEle =
             <Subtitle
                 playerRef={playerRef}
@@ -124,8 +131,6 @@ export default function Home() {
                 jumpTimeState={jumpTimeState}
                 jumpTextState={jumpTextState}
             />
-        const container = document.getElementById("subtitle-id");
-        const root = createRoot(container); // createRoot(container!) if you use TypeScript
         root.render(newEle);
     }, [subtitles]);
     return (

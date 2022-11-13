@@ -18,9 +18,7 @@ export default class UploadPhoto extends Component {
         await this.setState({submitLoading: true})
 
         files.forEach((file, i) => {
-            console.log(file);
             const isSrt = file.name.endsWith("srt");
-            console.log(file.name + isSrt);
             let url = this.getFileUrl(file);
             if (isSrt) {
                 this.setSrcUrl(url);
