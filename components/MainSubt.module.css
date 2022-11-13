@@ -6,15 +6,15 @@
 }
 
 .source {
-    margin: 10px;
-    padding: 10px;
-    background-color: rgba(255, 228, 196, 0.50);
-    font-size: 2.5em;
+    margin: 10px 40px;
+    padding: 10px 40px;
+    background-color: rgb(46, 49, 54);
+    font-size: 2em;
 }
 
 .dest {
-    margin: 10px;
-    font-size: 2em;
-    padding: 10px;
-    background-color: rgba(255, 228, 196, 0.50);
+    margin: 10px 40px;
+    font-size: 1.8em;
+    padding: 10px 40px;
+    background-color: rgb(46, 49, 54);
 }

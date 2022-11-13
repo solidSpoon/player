@@ -1,10 +1,14 @@
+html {
+    background-color: rgb(32, 34, 37);
+    color: #fff;
+}
 body {
     margin: 0;
 }
 .container {
     display: grid;
-    grid-template-columns: 60vw 40vw;
-    grid-template-rows: 60vh 40vh;
+    grid-template-columns: 65vw 35vw;
+    grid-template-rows: 70vh 30vh;
 }
 .subtitle {
     grid-column: 2 / span 1;
@@ -13,18 +17,8 @@ body {
 .player{
     height: 100%;
 }
-p {
-    background-color: black;
-}
+
 .underline-subtitle {
     display: flex;
     flex-direction: column;
-}
-.menu {
-    display: flex;
-    margin-top: auto;
-    margin-bottom: 4vh;
-    flex-direction: row-reverse;
-    padding-right: 1vw;
-    /*align-items: flex-end;*/
 }

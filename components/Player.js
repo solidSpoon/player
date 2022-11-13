@@ -14,7 +14,7 @@ const Player = ({playerRef, currentTimeState, videoFile, playingState}) => {
             url={videoFile ? videoFile : ""}
             className={"react-player" + style.player}
             playing={playing}
-            controls
+            controls={false}
             width="100%"
             height="100%"
             onProgress={(progress) => {

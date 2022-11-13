@@ -52,11 +52,13 @@ export default class UploadPhoto extends Component {
                     onChange={(event) => this.handlePhoto(event)}
                 />
                 <a className={style.button}
-                    onClick={() => {
-                        this.fileInputEl.current.click()		//当点击a标签的时候触发事件
-                    }}
+                   onClick={() => {
+                       this.fileInputEl.current.click()		//当点击a标签的时候触发事件
+                   }}
                 >
-                    打开文件
+
+                    +
+
                 </a>
             </Fragment>
         )

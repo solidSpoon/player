@@ -141,7 +141,7 @@ export default function Home() {
             events={{
                 onA, onD, onS, onLeft, onRight, onDown, onSpace, onUp, onW
             }}
-            needFocusing={false}
+            needFocusing={true}
         >
             <div className='container'>
                 <div className='player' id={"player-id"}>
@@ -165,9 +165,7 @@ export default function Home() {
                 </div>
                 <div className='underline-subtitle'>
                     <MainSubtitle currentSubtleState={currentSubtleState}/>
-                    <div className={'menu'}>
-                        <UploadPhoto fileState={videoFileState} srcState={srcState}/>
-                    </div>
+                    <UploadPhoto fileState={videoFileState} srcState={srcState}/>
                 </div>
             </div>
         </Keyevent>
