@@ -107,7 +107,7 @@ export default function Home() {
 
     const updateSubtitle = (str) => {
         const srtSubtitles = parseSrtSubtitles(str);
-        fillTranslate(srtSubtitles, setSubtitles);
+        fillTranslate(srtSubtitles);
         setSubtitles(srtSubtitles);
     };
 
