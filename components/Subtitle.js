@@ -4,12 +4,20 @@ import {isVisible} from "../lib/isVisible";
 import searchSubtitle from "../lib/searchSubtitle";
 import SearchSubtitle from "../lib/searchSubtitle";
 
-const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleState, jumpTimeState, pushTimeState, jumpTextState}) => {
+const Subtitle = ({
+                      playerRef,
+                      subtitlesState,
+                      currentTimeState,
+                      currentSubtleState,
+                      jumpTimeState,
+                      pushTimeState,
+                      jumpTextState
+                  }) => {
     const [currentTime, setCurrentTime] = currentTimeState;
     const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
     const [subtitles, setSubtitles] = subtitlesState;
-    const [jumpTime,setJumpTime] = jumpTimeState;
-    const [pushTime, setPushTime]= pushTimeState;
+    const [jumpTime, setJumpTime] = jumpTimeState;
+    const [pushTime, setPushTime] = pushTimeState;
     const [jumpText, setJumpText] = jumpTextState;
     let lastSubtitle;
     const subtitleItems = subtitles.map((item) => {
@@ -22,10 +30,10 @@ const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleSta
                 key={"Subtitle-subt" + item.key}
                 id={"Subtitle-subt" + item.key}
                 className={style.subtitleItem}
-                onClick={(event) => {
+                onClick={() => {
                     setPushTime(Date.now());
                     setJumpTime(item.timeStart);
-                    setJumpText(SearchSubtitle(subtitles,item.timeStart, currentSubtitle))
+                    setJumpText(item);
                     playerRef.current.seekTo(item.timeStart, 'seconds');
                 }
                 }>
@@ -48,10 +56,8 @@ const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleSta
         }
     }, [])
     useEffect(() => {
-        const parent = document.getElementById("Subtitle-subt");
         const subtitle = currentSubtitle;
-        const finalCurrentTime = Date.now() - pushTime > 600 ? currentTime : jumpTime;
-        const find = searchSubtitle(subtitles, finalCurrentTime, subtitle);
+        const find = Date.now() - pushTime > 600 ? searchSubtitle(subtitles, currentTime, subtitle) : jumpText;
         if (find === undefined || find === subtitle) {
             return;
         }
@@ -67,6 +73,7 @@ const Subtitle = ({playerRef, subtitlesState, currentTimeState, currentSubtleSta
                 .style.visibility = "hidden";
         }
         setCurrentSubtitle(find)
+        const parent = document.getElementById("Subtitle-subt");
         if (!isVisible(child)) {
             parent.scrollTo(0, child.offsetTop - 50)
         }
