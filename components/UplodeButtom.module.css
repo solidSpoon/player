@@ -8,22 +8,19 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    background-color: #6e834c;
 }
 
 .button svg {
-    width: 80%;
-    height: 80%;
+    width: 50%;
+    height: 50%;
 }
 
 .button svg path {
-    fill: #6e834c;
-}
-
-.button:hover svg path {
-    fill: rgba(255, 255, 255, 0.8);
+    fill: rgba(255, 255, 255, 0.85);
 }
 
 .button:hover {
-    background-color: #6e834c;
+    background-color: #778f50;
     cursor: pointer;
 }
