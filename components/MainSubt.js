@@ -3,7 +3,7 @@ import React, {Component, Fragment, useEffect, useRef} from 'react';
 
 const MainSubtitle = ({currentSubtleState}) => {
     const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
-    useEffect(() => console.log(currentSubtitle), [currentSubtitle]);
+    // useEffect(() => console.log(currentSubtitle), [currentSubtitle]);
     return (
         <div className={style.mainSubtitleContainer}>
             <div className={style.source}>{currentSubtitle ? currentSubtitle.text : ''}</div>
