@@ -47,7 +47,7 @@ export default class UploadPhoto extends Component {
                     type="file"
                     multiple
                     ref={this.fileInputEl}    //挂载ref
-                    accept=".mp4,.srt"    //限制文件类型
+                    accept=".mp4,.mkv,.srt"    //限制文件类型
                     hidden    //隐藏input
                     onChange={(event) => this.handlePhoto(event)}
                 />

@@ -7,8 +7,8 @@ body {
 }
 .container {
     display: grid;
-    grid-template-columns: 65vw 35vw;
-    grid-template-rows: 70vh 30vh;
+    grid-template-columns: 70vw 30vw;
+    grid-template-rows: 80vh 20vh;
 }
 .subtitle {
     grid-column: 2 / span 1;

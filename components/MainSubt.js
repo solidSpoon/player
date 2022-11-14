@@ -7,7 +7,8 @@ const MainSubtitle = ({currentSubtleState}) => {
     return (
         <div className={style.mainSubtitleContainer}>
             <div className={style.source}>{currentSubtitle ? currentSubtitle.text : ''}</div>
-            <div className={style.dest}>{currentSubtitle ? currentSubtitle.msTranslate : ''}</div>
+            <div className={style.destM}>{currentSubtitle ? currentSubtitle.msTranslate : ''}</div>
+            <div className={style.destH}>{currentSubtitle ? currentSubtitle.textZH : ''}</div>
         </div>
     )
 }

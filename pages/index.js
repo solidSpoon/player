@@ -97,7 +97,9 @@ export default function Home() {
             axios
                 .get(srcUrl)
                 .then(function (response) {
+                    console.log('a');
                     updateSubtitle(response.data)
+                    console.log('b');
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -106,9 +108,12 @@ export default function Home() {
     }, [srcUrl]);
 
     const updateSubtitle = (str) => {
+        console.log('c');
         const srtSubtitles = parseSrtSubtitles(str);
         new TransFiller(srtSubtitles).fillTranslate();
+        console.log('k');
         setSubtitles(srtSubtitles);
+        console.log('l');
     };
 
     const [subtitleRoot, setSubtitleRoot] = useState(null);
