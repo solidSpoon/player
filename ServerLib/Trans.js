@@ -47,25 +47,4 @@ class Trans {
 
 }
 
-class buf {
-    constructor(startIndex) {
-        this.startIndex = startIndex;
-        this.arrs = [];
-        this.size = 0;
-        this.max = 2000;
-    }
-
-    canAdd(str) {
-        return this.size + str.length() < this.max;
-    }
-
-    add(str) {
-        if (!this.canAdd(str)) {
-            throw 'too large';
-        }
-        this.arrs.push(str);
-    }
-
-}
-
 export default Trans;
