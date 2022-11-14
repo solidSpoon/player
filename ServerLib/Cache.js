@@ -2,7 +2,7 @@ class Cache {
     constructor() {
         const NeDB = require('nedb');
         this.db = new NeDB({
-            filename: './db/user3.db',
+            filename: './db/sentence.db',
             autoload: true,
         });
     }

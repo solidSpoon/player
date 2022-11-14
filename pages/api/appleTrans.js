@@ -3,13 +3,13 @@ export default function handler(req, res) {
         res.status(200).json();
     }
     const applescript = require('applescript');
-    const word = req.query.str;
-    word.replace('"', ' ');
+    let word = req.query.str;
+    word = word.replace('"', ' ');
     let script = "tell application \"Bob\"\n" +
         "launch\n" +
         "translate \"{word}\"\n" +
         "end tell";
-    word.replace('{word}', word);
+    script = script.replace('{word}', word);
     applescript.execString(script, (err, rtn) => {
         if (err) {
             console.log("run apple script error:", err);
