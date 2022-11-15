@@ -1,6 +1,7 @@
 export default function handler(req, res) {
-    if (!process.platform === "darwin") {
+    if (process.platform !== "darwin") {
         res.status(200).json();
+        return;
     }
     const applescript = require('applescript');
     let word = req.query.str;
