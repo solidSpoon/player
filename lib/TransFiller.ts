@@ -1,39 +1,42 @@
 import axios from "axios";
+import SentenceT from "./SentenceT";
 
 class TransFiller {
-    constructor(subtitles) {
+    private readonly subtitles: Array<SentenceT>;
+
+    constructor(subtitles: Array<SentenceT>) {
         this.subtitles = subtitles ? subtitles : [];
     }
 
     /**
      * public
      */
-    fillTranslate() {
+    fillTranslate(): void {
         let buffer = new Buf(0);
         const root = buffer;
         this.subtitles.forEach((item, index) => {
             item.text = item.text ? item.text : '';
             if (!buffer.canAdd(item.text)) {
-                buffer["next"] = new Buf(index);
-                buffer = buffer["next"];
-                buffer["delay"] = 1;
+                buffer.next = new Buf(index);
+                buffer = buffer.next;
+                buffer.delay = 1;
             }
-            buffer.add(item["text"]);
+            buffer.add(item.text);
         })
         this.delayTrans(root);
     }
 
 
-    delayTrans(buf) {
-        if (buf.size === 0) {
+    delayTrans(buf: Buf): void {
+        if (buf.isEmpty()) {
             return;
         }
         setTimeout(() => this.doFillTranslate(buf), buf.delay * 1000);
     }
 
-    doFillTranslate(buf) {
-        const start = buf["startIndex"];
-        const str = buf["strs"];
+    doFillTranslate(buf: Buf): void {
+        const start = buf.startIndex;
+        const str = buf.strs;
         axios
             .post('/api/translate', {
                 str: str
@@ -49,7 +52,7 @@ class TransFiller {
             });
     }
 
-    processTransResponse(response, start) {
+    processTransResponse(response, start: number): void {
         if (response["data"]["success"] === false) {
             return;
         }
@@ -61,6 +64,13 @@ class TransFiller {
 }
 
 class Buf {
+    startIndex: number;
+    delay: number;
+    strs: string[];
+    private size: number;
+    private readonly max: number;
+    next: Buf;
+
     constructor(startIndex) {
         this.startIndex = startIndex;
         this.delay = 0;
@@ -70,7 +80,7 @@ class Buf {
         this.next = undefined;
     }
 
-    canAdd(str) {
+    canAdd(str: string): boolean {
         const b = this.size + str.length < this.max;
         if (!b) {
             if (this.size === 0) {
@@ -80,12 +90,16 @@ class Buf {
         return b;
     }
 
-    add(str) {
+    add(str: string): void {
         if (!this.canAdd(str)) {
             throw 'translate buf: too large';
         }
         this.strs.push(str);
         this.size += str.length;
+    }
+
+    isEmpty(): boolean {
+        return this.size === 0;
     }
 }
 

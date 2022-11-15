@@ -2,9 +2,12 @@ import style from './MainSubt.module.css'
 import React, {Component, Fragment, useEffect, useRef, useState} from 'react';
 import TransableSubtLine from "./TransableSubtLine";
 import ReactDOM from 'react-dom/client'
-
-const MainSubtitle = ({currentSubtleState}) => {
-    const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
+import SentenceT from "../lib/SentenceT";
+interface MainSubtitleParam {
+    currentSubtleState: [SentenceT, React.Dispatch<React.SetStateAction<SentenceT>>]
+}
+const MainSubtitle = (p: MainSubtitleParam) => {
+    const [currentSubtitle, setCurrentSubtitle] = p.currentSubtleState;
     let ref = undefined;
     const [root, setRoot] = useState();
     useEffect(() => {
@@ -25,7 +28,12 @@ const MainSubtitle = ({currentSubtleState}) => {
             <div className={style.destM}>{currentSubtitle ? currentSubtitle.msTranslate : ''}</div>
             <div className={style.destH}>{currentSubtitle ? currentSubtitle.textZH : ''}</div>
         </>
-        r.render(ele);
+        if (r !== undefined) {
+            // @ts-ignore
+            // todo
+            r.render(ele);
+        }
+
 
     }, [currentSubtitle]);
     return (

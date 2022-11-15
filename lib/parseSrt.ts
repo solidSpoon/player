@@ -8,10 +8,12 @@
  * @param  string srt 字幕文件的内容
  * @return *[]
  */
-export default function parseSrtSubtitles(srt) {
-    const subtitles = [];
+import SentenceT from "./SentenceT";
+
+export default function parseSrtSubtitles(srt: string): Array<SentenceT> {
+    const subtitles: Array<SentenceT> = [];
     let textSubtitles = srt.split(/\r?\n\r?\n/); // 每条字幕的信息，包含了序号，时间，字幕内容
-    textSubtitles = textSubtitles.map(item => item.replace(/{\w+}/,''));
+    textSubtitles = textSubtitles.map(item => item.replace(/{\w+}/, ''));
     for (let i = 0; i < textSubtitles.length; ++i) {
         const textSubtitle = textSubtitles[i].split(/\r?\n/);
 
@@ -34,15 +36,13 @@ export default function parseSrtSubtitles(srt) {
 
 
             // 字幕对象
-            var subtitle = {
-                key: sn,
-                sn: sn,
-                timeStart: startTime,
-                timeEnd: endTime,
-                text: contentEn,
-                textZH: contentZh
-            };
-
+            const subtitle = new SentenceT();
+            subtitle.key = sn;
+            subtitle.sn = sn;
+            subtitle.timeStart = startTime;
+            subtitle.timeEnd = endTime;
+            subtitle.text = contentEn;
+            subtitle.textZH = contentZh;
             subtitles.push(subtitle);
         }
     }
@@ -52,14 +52,13 @@ export default function parseSrtSubtitles(srt) {
 /**
  * 把字符串格式的字幕时间转换为浮点数
  *
- * @param  string t 字符串格式的时间
  * @return 浮点数格式的时间
+ * @param t
  */
-function toSeconds(t) {
-    var s = 0.0;
-
+function toSeconds(t: string): number {
+    let s = 0.0;
     if (t) {
-        var p = t.split(':');
+        const p = t.split(':');
         let i;
         for (i = 0; i < p.length; i++) {
             s = s * 60 + parseFloat(p[i].replace(',', '.'));
@@ -69,7 +68,7 @@ function toSeconds(t) {
     return s;
 }
 
-function isChinese(str) {
+function isChinese(str: string): boolean {
     const re = /[\u4e00-\u9fa5]/;
     return re.test(str);
 }

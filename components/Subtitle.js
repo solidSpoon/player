@@ -3,7 +3,7 @@ import {useEffect} from "react";
 import {isVisible} from "../lib/isVisible";
 import searchSubtitle from "../lib/searchSubtitle";
 import SearchSubtitle from "../lib/searchSubtitle";
-
+import SentenceT from "../lib/SentenceT";
 const Subtitle = ({
                       playerRef,
                       subtitlesState,

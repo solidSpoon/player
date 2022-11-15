@@ -8,11 +8,12 @@ import {createRoot} from 'react-dom/client';
 import parseSrtSubtitles from "../lib/parseSrt";
 import axios from "axios";
 import TransFiller from "../lib/TransFiller";
+import SentenceT from "../lib/SentenceT";
 
 export default function Home() {
     const playerRef = useRef(null)
     const currentTimeState = useState(0);
-    const currentSubtleState = useState();
+    const currentSubtleState = useState<SentenceT>();
     const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
     const videoFileState = useState();
     const [videoFile, setVideoFile] = videoFileState;
@@ -25,9 +26,9 @@ export default function Home() {
 
     const pushTimeState = useState(Date.now);
     const [time, setTime] = pushTimeState;
-    const jumpTextState = useState();
+    const jumpTextState = useState<SentenceT>();
     const [text, setText] = jumpTextState;
-    const jumpTimeState = useState();
+    const jumpTimeState = useState<number>();
     const [jumpTime, setJumpTime] = jumpTimeState;
 
     const onLeft = () => {
@@ -141,7 +142,7 @@ export default function Home() {
                 subtitlesState={subtitleState}
                 currentTimeState={currentTimeState}
                 currentSubtleState={currentSubtleState}
-                id={Date.now()}
+                // id={Date.now()}
                 pushTimeState={pushTimeState}
                 jumpTimeState={jumpTimeState}
                 jumpTextState={jumpTextState}
@@ -177,7 +178,7 @@ export default function Home() {
                     />
                 </div>
                 <div className='underline-subtitle'>
-                    <MainSubtitle currentSubtleState={currentSubtleState}/>
+                    <MainSubtitle  currentSubtleState={currentSubtleState}/>
                     <UploadPhoto fileState={videoFileState} srcState={srcState}/>
                 </div>
             </div>
