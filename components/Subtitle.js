@@ -75,7 +75,10 @@ const Subtitle = ({
         setCurrentSubtitle(find)
         const parent = document.getElementById("Subtitle-subt");
         if (!isVisible(child)) {
-            parent.scrollTo(0, child.offsetTop - 50)
+            parent.scrollTo({
+                top: child.offsetTop - 50,
+                behavior: "smooth"
+            })
         }
 
     }, [currentTime, jumpTime]);
