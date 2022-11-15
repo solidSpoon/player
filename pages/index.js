@@ -34,6 +34,9 @@ export default function Home() {
         onA();
     }
     const onA = () => {
+        if (currentSubtitle === undefined) {
+            return;
+        }
         const current = Date.now() - time > 1000 ? currentSubtitle : text;
         const prev = current.prevItem ? current.prevItem : current;
         setTime(Date.now);
@@ -46,6 +49,9 @@ export default function Home() {
         onD()
     }
     const onD = () => {
+        if (currentSubtitle === undefined) {
+            return;
+        }
         const current = Date.now() - time > 1000 ? currentSubtitle : text;
         const next = current.nextItem ? current.nextItem : current;
         setTime(Date.now);
@@ -57,6 +63,9 @@ export default function Home() {
         onS();
     }
     const onS = () => {
+        if (currentSubtitle === undefined) {
+            return;
+        }
         const current = Date.now() - time > 1000 ? currentSubtitle : text;
         setTime(Date.now)
         setJumpTime(current.timeStart)
@@ -69,10 +78,14 @@ export default function Home() {
         onSpace();
     }
     const onSpace = () => {
+        const htmlVideoElement = document.querySelector('video');
+        if (htmlVideoElement === null) {
+            return;
+        }
         if (playing) {
-            document.querySelector('video').pause();
+            htmlVideoElement.pause();
         } else {
-            document.querySelector('video').play();
+            htmlVideoElement.play();
         }
     }
     useEffect(() => {
