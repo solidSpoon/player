@@ -34,7 +34,6 @@ const Subtitle = ({
                     if (playerRef.current === undefined) {
                         return;
                     }
-                    console.log("jt" + item.timeStart)
                     setPushTime(Date.now());
                     setJumpTime(item.timeStart);
                     setJumpText(item);
@@ -60,7 +59,6 @@ const Subtitle = ({
         }
     }, [])
     useEffect(() => {
-        console.log("inin")
         const subtitle = currentSubtitle;
         const find: SentenceT = Date.now() - pushTime > 600 ? searchSubtitle(subtitles, currentTime, subtitle) : jumpText;
         if (find === undefined || find === subtitle) {

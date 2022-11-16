@@ -1,11 +1,13 @@
 import style from './MainSubt.module.css'
-import React, {Component, Fragment, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import TransableSubtLine from "./TransableSubtLine";
 import ReactDOM from 'react-dom/client'
 import SentenceT from "../lib/SentenceT";
+
 interface MainSubtitleParam {
     currentSubtleState: [SentenceT, React.Dispatch<React.SetStateAction<SentenceT>>]
 }
+
 const MainSubtitle = (p: MainSubtitleParam) => {
     const [currentSubtitle, setCurrentSubtitle] = p.currentSubtleState;
     let ref = undefined;
@@ -23,15 +25,19 @@ const MainSubtitle = (p: MainSubtitleParam) => {
             r = ReactDOM.createRoot(ref);
             setRoot(r);
         }
-        let ele = <>
-            <div className={style.source}>{TransableSubtLine(currentSubtitle.text, style.msWord, style.msNotWord)}</div>
-            <div className={style.destM}>{currentSubtitle ? currentSubtitle.msTranslate : ''}</div>
-            <div className={style.destH}>{currentSubtitle ? currentSubtitle.textZH : ''}</div>
-        </>
+        const eles = [];
+        eles.push(<div
+            className={style.source}>{TransableSubtLine(currentSubtitle.text, style.msWord, style.msNotWord)}</div>)
+        if (currentSubtitle.msTranslate !== undefined) {
+            eles.push(<div className={style.destM}>{currentSubtitle ? currentSubtitle.msTranslate : ''}</div>)
+        }
+        if (currentSubtitle.textZH !== undefined) {
+            console.log("aaa"+currentSubtitle.textZH);
+            eles.push(<div className={style.destH}>{currentSubtitle ? currentSubtitle.textZH : ''}</div>)
+        }
         if (r !== undefined) {
             // @ts-ignore
-            // todo
-            r.render(ele);
+            r.render(eles);
         }
 
 

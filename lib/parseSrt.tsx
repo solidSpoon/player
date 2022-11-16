@@ -42,7 +42,7 @@ export default function parseSrtSubtitles(srt: string): Array<SentenceT> {
             subtitle.timeStart = startTime;
             subtitle.timeEnd = endTime;
             subtitle.text = contentEn;
-            subtitle.textZH = contentZh;
+            subtitle.textZH = contentZh !== '' ? contentZh : undefined;
             subtitles.push(subtitle);
         }
     }
