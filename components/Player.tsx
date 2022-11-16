@@ -1,11 +1,11 @@
 import ReactPlayer from 'react-player'
-import React, {ReactElement, useEffect, useRef, useState} from 'react'
+import React, {ReactElement, useEffect, useState} from 'react'
 import style from './Player.module.css'
 
 
 const Player = ({playerRef, currentTimeState, videoFile, playingState}) => {
     const [player, setPlayer] = useState<ReactElement>()
-    const [currentTime, setCurrentTime] = currentTimeState;
+    const [, setCurrentTime] = currentTimeState;
     const [playing, setPlaying] = playingState
     let reactPlayer = <>
         <ReactPlayer

@@ -13,9 +13,9 @@ const Subtitle = ({
                       pushTimeState,
                       jumpTextState
                   }) => {
-    const [currentTime, setCurrentTime] = currentTimeState;
+    const [currentTime] = currentTimeState;
     const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
-    const [subtitles, setSubtitles] = subtitlesState;
+    const [subtitles] = subtitlesState;
     const [jumpTime, setJumpTime] = jumpTimeState;
     const [pushTime, setPushTime] = pushTimeState;
     const [jumpText, setJumpText] = jumpTextState;
@@ -31,6 +31,10 @@ const Subtitle = ({
                 id={"Subtitle-subt" + item.key}
                 className={style.subtitleItem}
                 onClick={() => {
+                    if (playerRef.current === undefined) {
+                        return;
+                    }
+                    console.log("jt" + item.timeStart)
                     setPushTime(Date.now());
                     setJumpTime(item.timeStart);
                     setJumpText(item);
@@ -56,6 +60,7 @@ const Subtitle = ({
         }
     }, [])
     useEffect(() => {
+        console.log("inin")
         const subtitle = currentSubtitle;
         const find: SentenceT = Date.now() - pushTime > 600 ? searchSubtitle(subtitles, currentTime, subtitle) : jumpText;
         if (find === undefined || find === subtitle) {

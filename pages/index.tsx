@@ -1,4 +1,4 @@
-import React, {ReactElement, useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import Player from "../components/Player";
 import Subtitle from "../components/Subtitle";
 import MainSubtitle from "../components/MainSubt";
@@ -13,7 +13,7 @@ import ReactPlayer from "react-player";
 import KeyListener from "../lib/KeyListener";
 
 export default function Home() {
-    const playerRef = useRef<ReactPlayer>(null)
+    const playerRef = useRef<ReactPlayer>()
     const currentTimeState = useState(0);
     const currentSubtleState = useState<SentenceT>();
     const videoFileState = useState<string>();
@@ -65,14 +65,14 @@ export default function Home() {
     };
 
     const [subtitleRoot, setSubtitleRoot] = useState(null);
-   const keyListener = new KeyListener(
-       currentSubtleState,
-       pushTimeState,
-       jumpTextState,
-       jumpTimeState,
-       playerRef,
-       playingState
-   );
+    const keyListener = new KeyListener(
+        currentSubtleState,
+        pushTimeState,
+        jumpTextState,
+        jumpTimeState,
+        playerRef,
+        playingState
+    );
     useEffect(() => {
         if (subtitles === undefined) {
             return;
@@ -89,14 +89,17 @@ export default function Home() {
                 subtitlesState={subtitleState}
                 currentTimeState={currentTimeState}
                 currentSubtleState={currentSubtleState}
-                // id={Date.now()}
                 pushTimeState={pushTimeState}
                 jumpTimeState={jumpTimeState}
                 jumpTextState={jumpTextState}
             />
         root.render(newEle);
     }, [subtitles]);
-    // @ts-ignore
+
+    const uploadPhotoParams = {
+        fileState: videoFileState,
+        srcState: srcState
+    }
     return (
         <Keyevent
             className="TopSide"
@@ -105,12 +108,12 @@ export default function Home() {
         >
             <div className='container'>
                 <div className='player' id={"player-id"}>
-                    <Player
-                        playerRef={playerRef}
-                        currentTimeState={currentTimeState}
-                        videoFile={videoFile}
-                        playingState={playingState}
-                    />
+                    {/*<Player*/}
+                    {/*    playerRef={playerRef}*/}
+                    {/*    currentTimeState={currentTimeState}*/}
+                    {/*    videoFile={videoFile}*/}
+                    {/*    playingState={playingState}*/}
+                    {/*/>*/}
                 </div>
                 <div className='subtitle' id={"subtitle-id"}>
                     <Subtitle
@@ -125,9 +128,7 @@ export default function Home() {
                 </div>
                 <div className='underline-subtitle'>
                     <MainSubtitle currentSubtleState={currentSubtleState}/>
-                    {/*todo*/}
-                    {/*@ts-ignore*/}
-                    <UploadPhoto fileState={videoFileState} srcState={srcState}/>
+                    <UploadPhoto {...uploadPhotoParams}/>
                 </div>
             </div>
         </Keyevent>

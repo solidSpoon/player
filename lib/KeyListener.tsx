@@ -29,9 +29,15 @@ class KeyListener {
     }
 
     private onD = () => {
+        if (this.currentSubtitle === undefined) {
+            return;
+        }
         this.jumpIfPresent(this.currentSubtitle.getNestItem);
     }
     private onA = () => {
+        if (this.currentSubtitle === undefined) {
+            return;
+        }
         this.jumpIfPresent(this.currentSubtitle.getPrevItem);
     }
 
@@ -65,7 +71,10 @@ class KeyListener {
         this.jump(target);
     }
 
-    private jump(target: SentenceT) {
+    public jump(target: SentenceT) {
+        if (this.playerRef.current === undefined) {
+            return;
+        }
         this.setTime(Date.now);
         this.setText(target);
         this.setJumpTime(target.timeStart);
