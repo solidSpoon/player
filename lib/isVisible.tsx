@@ -1,4 +1,4 @@
-export const isVisible = (el) => {
+export const isVisible = (el: HTMLElement): boolean => {
     const rect = el.getBoundingClientRect();
     const vWidth = window.innerWidth || document.documentElement.clientWidth;
     const vHeight = (window.innerHeight || document.documentElement.clientHeight) - 50;

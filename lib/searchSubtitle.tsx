@@ -1,7 +1,7 @@
 import SentenceT from "./SentenceT";
 
-const searchSubtitle = (subtitles: SentenceT[], currentTime: number, currentSubtitle: SentenceT) => {
-    if (currentSubtitle === undefined) {
+const searchSubtitle = (subtitles: SentenceT[], currentTime: number, currentSubtitle: SentenceT): SentenceT => {
+    if (currentSubtitle === undefined || currentSubtitle.fileUrl !== subtitles[0].fileUrl) {
         return subtitles.find(v => current(v, currentTime));
     }
 

@@ -2,8 +2,8 @@ import style from './Subtitle.module.css'
 import {useEffect} from "react";
 import {isVisible} from "../lib/isVisible";
 import searchSubtitle from "../lib/searchSubtitle";
-import SearchSubtitle from "../lib/searchSubtitle";
 import SentenceT from "../lib/SentenceT";
+
 const Subtitle = ({
                       playerRef,
                       subtitlesState,
@@ -57,7 +57,7 @@ const Subtitle = ({
     }, [])
     useEffect(() => {
         const subtitle = currentSubtitle;
-        const find = Date.now() - pushTime > 600 ? searchSubtitle(subtitles, currentTime, subtitle) : jumpText;
+        const find: SentenceT = Date.now() - pushTime > 600 ? searchSubtitle(subtitles, currentTime, subtitle) : jumpText;
         if (find === undefined || find === subtitle) {
             return;
         }
@@ -65,7 +65,7 @@ const Subtitle = ({
             find.subtleDiv = document.getElementById("Subtitle-subt" + find.key);
         }
         const child = find.subtleDiv;
-        const icon = child.getElementsByClassName(style.subtitleItemIcon)[0];
+        const icon = child.querySelector<HTMLElement>('.' + style.subtitleItemIcon);
         icon.style.visibility = "visible";
         if (subtitle !== undefined) {
             subtitle.subtleDiv

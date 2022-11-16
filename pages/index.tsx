@@ -111,7 +111,7 @@ export default function Home() {
             axios
                 .get(srcUrl)
                 .then(function (response) {
-                    updateSubtitle(response.data)
+                    updateSubtitle(response.data, srcUrl)
                 })
                 .catch(function (error) {
                     console.log(error);
@@ -119,8 +119,9 @@ export default function Home() {
         }
     }, [srcUrl]);
 
-    const updateSubtitle = (str) => {
+    const updateSubtitle = (str: string, fileUrl: string): void => {
         const srtSubtitles = parseSrtSubtitles(str);
+        srtSubtitles.forEach(item => item.fileUrl = fileUrl)
         new TransFiller(srtSubtitles).fillTranslate();
         setSubtitles(srtSubtitles);
     };
