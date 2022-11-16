@@ -22,6 +22,12 @@ class SentenceT {
     nextItem: SentenceT;
     prevItem: SentenceT;
     subtleDiv: HTMLElement;
+    public getPrevItem = (): SentenceT => {
+        return this.prevItem;
+    }
+    public getNestItem = (): SentenceT => {
+        return this.nextItem;
+    }
 
     constructor() {
     }

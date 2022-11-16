@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, {ReactElement, useEffect, useRef, useState} from 'react'
 import Player from "../components/Player";
 import Subtitle from "../components/Subtitle";
 import MainSubtitle from "../components/MainSubt";
@@ -9,86 +9,24 @@ import parseSrtSubtitles from "../lib/parseSrt";
 import axios from "axios";
 import TransFiller from "../lib/TransFiller";
 import SentenceT from "../lib/SentenceT";
+import ReactPlayer from "react-player";
+import KeyListener from "../lib/KeyListener";
 
 export default function Home() {
-    const playerRef = useRef(null)
+    const playerRef = useRef<ReactPlayer>(null)
     const currentTimeState = useState(0);
     const currentSubtleState = useState<SentenceT>();
-    const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
     const videoFileState = useState<string>();
-    const [videoFile, setVideoFile] = videoFileState;
+    const [videoFile] = videoFileState;
     const playingState = useState<boolean>(true);
-    const [playing, setPlaying] = playingState;
     const srcState = useState<string>();
-    const [srcUrl, setSrcUrl] = srcState;
+    const [srcUrl] = srcState;
     const subtitleState = useState<SentenceT[]>([]);
     const [subtitles, setSubtitles] = subtitleState;
 
     const pushTimeState = useState<number>(Date.now);
-    const [time, setTime] = pushTimeState;
     const jumpTextState = useState<SentenceT>();
-    const [text, setText] = jumpTextState;
     const jumpTimeState = useState<number>();
-    const [jumpTime, setJumpTime] = jumpTimeState;
-
-    const onLeft = () => {
-        onA();
-    }
-    const onA = () => {
-        if (currentSubtitle === undefined) {
-            return;
-        }
-        const current = Date.now() - time > 1000 ? currentSubtitle : text;
-        const prev = current.prevItem ? current.prevItem : current;
-        setTime(Date.now);
-        setText(prev);
-        setJumpTime(prev.timeStart);
-        playerRef.current.seekTo(prev.timeStart, 'seconds');
-
-    }
-    const onRight = () => {
-        onD()
-    }
-    const onD = () => {
-        if (currentSubtitle === undefined) {
-            return;
-        }
-        const current = Date.now() - time > 1000 ? currentSubtitle : text;
-        const next = current.nextItem ? current.nextItem : current;
-        setTime(Date.now);
-        setText(next);
-        setJumpTime(next.timeStart);
-        playerRef.current.seekTo(next.timeStart, 'seconds');
-    }
-    const onDown = () => {
-        onS();
-    }
-    const onS = () => {
-        if (currentSubtitle === undefined) {
-            return;
-        }
-        const current = Date.now() - time > 1000 ? currentSubtitle : text;
-        setTime(Date.now)
-        setJumpTime(current.timeStart)
-        playerRef.current.seekTo(current.timeStart, 'seconds');
-    }
-    const onW = () => {
-        onSpace();
-    }
-    const onUp = () => {
-        onSpace();
-    }
-    const onSpace = () => {
-        const htmlVideoElement = document.querySelector('video');
-        if (htmlVideoElement === null) {
-            return;
-        }
-        if (playing) {
-            htmlVideoElement.pause();
-        } else {
-            htmlVideoElement.play();
-        }
-    }
     useEffect(() => {
         if (videoFile !== undefined) {
             const newEle =
@@ -127,6 +65,14 @@ export default function Home() {
     };
 
     const [subtitleRoot, setSubtitleRoot] = useState(null);
+   const keyListener = new KeyListener(
+       currentSubtleState,
+       pushTimeState,
+       jumpTextState,
+       jumpTimeState,
+       playerRef,
+       playingState
+   );
     useEffect(() => {
         if (subtitles === undefined) {
             return;
@@ -154,9 +100,7 @@ export default function Home() {
     return (
         <Keyevent
             className="TopSide"
-            events={{
-                onA, onD, onS, onLeft, onRight, onDown, onSpace, onUp, onW
-            }}
+            events={keyListener.getObj()}
             needFocusing={true}
         >
             <div className='container'>
