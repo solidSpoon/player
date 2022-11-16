@@ -1,8 +1,20 @@
 import React, {Component, Fragment} from 'react';
 import style from './UplodeButtom.module.css'
+import SentenceT from "../lib/SentenceT";
+
+interface UploadPhotoParam {
+    fileState: [string, React.Dispatch<React.SetStateAction<string>>],
+    srcState: [string, React.Dispatch<React.SetStateAction<string>>]
+}
 
 export default class UploadPhoto extends Component {
-    constructor(props) {
+    private srcUrl: string;
+    private setSrcUrl: any;
+    private setFileState: any;
+    private fileState: any;
+    private fileInputEl: React.RefObject<HTMLInputElement>;
+
+    constructor(props: UploadPhotoParam) {
         super(props)
         this.state = {
             submitLoading: false,
@@ -28,9 +40,11 @@ export default class UploadPhoto extends Component {
         })
     }
 
-    getFileUrl(file) {
-        let url = null;
+    getFileUrl(file): string {
+        let url: string = null;
+        // @ts-ignore
         if (window.createObjectURL !== undefined) {
+            // @ts-ignore
             url = window.createObjectURL(file)
         } else if (window.URL !== undefined) {
             url = window.URL.createObjectURL(file)
@@ -57,7 +71,7 @@ export default class UploadPhoto extends Component {
                    }}
                 >
 
-                    <svg t="1668390462766" className="icon" viewBox="0 0 1024 1024" version="1.1"
+                    <svg className="icon" viewBox="0 0 1024 1024" version="1.1"
                          xmlns="http://www.w3.org/2000/svg" p-id="5901" width="200" height="200">
                         <path
                             d="M426.666667 426.666667H85.546667A85.418667 85.418667 0 0 0 0 512c0 47.445333 38.314667 85.333333 85.546667 85.333333H426.666667v341.12c0 47.274667 38.186667 85.546667 85.333333 85.546667 47.445333 0 85.333333-38.314667 85.333333-85.546667V597.333333h341.12A85.418667 85.418667 0 0 0 1024 512c0-47.445333-38.314667-85.333333-85.546667-85.333333H597.333333V85.546667A85.418667 85.418667 0 0 0 512 0c-47.445333 0-85.333333 38.314667-85.333333 85.546667V426.666667z"

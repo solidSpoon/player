@@ -1,12 +1,17 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import getConfig from 'next/config'
 import NeDB from "nedb";
+import * as tencentcloud from "tencentcloud-sdk-nodejs";
+import {Client} from "tencentcloud-sdk-nodejs/tencentcloud/services/tmt/v20180321/tmt_client";
+import {TextTranslateBatchRequest} from "tencentcloud-sdk-nodejs/src/services/tmt/v20180321/tmt_models";
+import CacheEntity from "./CacheEntity";
 
 class Trans {
+    private client: Client;
 
     constructor() {
         const {serverRuntimeConfig, publicRuntimeConfig} = getConfig();
-        const tencentcloud = require("tencentcloud-sdk-nodejs");
+        // const tencentcloud = require("tencentcloud-sdk-nodejs");
         const TmtClient = tencentcloud.tmt.v20180321.Client;
         const clientConfig = {
             credential: {
@@ -18,13 +23,7 @@ class Trans {
         this.client = new TmtClient(clientConfig);
     }
 
-
-    static batchTransExample = {
-        test: undefined,
-        translate: undefined
-    }
-
-    batchTrans(source, callback) {
+    batchTrans(source: CacheEntity[], callback: () => void) {
         console.log('do-trans');
         this.client.TextTranslateBatch({
                 Source: 'en',

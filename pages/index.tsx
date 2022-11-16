@@ -15,16 +15,16 @@ export default function Home() {
     const currentTimeState = useState(0);
     const currentSubtleState = useState<SentenceT>();
     const [currentSubtitle, setCurrentSubtitle] = currentSubtleState;
-    const videoFileState = useState();
+    const videoFileState = useState<string>();
     const [videoFile, setVideoFile] = videoFileState;
-    const playingState = useState(true);
+    const playingState = useState<boolean>(true);
     const [playing, setPlaying] = playingState;
-    const srcState = useState();
+    const srcState = useState<string>();
     const [srcUrl, setSrcUrl] = srcState;
-    const subtitleState = useState([]);
+    const subtitleState = useState<SentenceT[]>([]);
     const [subtitles, setSubtitles] = subtitleState;
 
-    const pushTimeState = useState(Date.now);
+    const pushTimeState = useState<number>(Date.now);
     const [time, setTime] = pushTimeState;
     const jumpTextState = useState<SentenceT>();
     const [text, setText] = jumpTextState;
@@ -149,6 +149,7 @@ export default function Home() {
             />
         root.render(newEle);
     }, [subtitles]);
+    // @ts-ignore
     return (
         <Keyevent
             className="TopSide"
@@ -178,7 +179,9 @@ export default function Home() {
                     />
                 </div>
                 <div className='underline-subtitle'>
-                    <MainSubtitle  currentSubtleState={currentSubtleState}/>
+                    <MainSubtitle currentSubtleState={currentSubtleState}/>
+                    {/*todo*/}
+                    {/*@ts-ignore*/}
                     <UploadPhoto fileState={videoFileState} srcState={srcState}/>
                 </div>
             </div>

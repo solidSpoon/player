@@ -1,4 +1,6 @@
-const searchSubtitle = (subtitles, currentTime, currentSubtitle) => {
+import SentenceT from "./SentenceT";
+
+const searchSubtitle = (subtitles: SentenceT[], currentTime: number, currentSubtitle: SentenceT) => {
     if (currentSubtitle === undefined) {
         return subtitles.find(v => current(v, currentTime));
     }
@@ -19,8 +21,8 @@ const searchSubtitle = (subtitles, currentTime, currentSubtitle) => {
     }
     return subtitles.find(v => current(v, currentTime));
 }
-const current = (s, currentTime) => {
-    let timeEnd = s.timeEnd;
+const current = (s: SentenceT, currentTime: number): boolean => {
+    let timeEnd: number = s.timeEnd;
     if (s.nextItem !== undefined) {
         timeEnd = s.nextItem.timeStart;
     }
