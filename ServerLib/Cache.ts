@@ -12,6 +12,10 @@ class Cache {
     }
 
     insert(arr: CacheEntity[], callback: () => void) {
+        if (arr == undefined || arr.length === 0) {
+            return;
+        }
+        arr.forEach(item => item.addDate = Date.now());
         this.db.insert(arr, function () {
             callback();
         })
