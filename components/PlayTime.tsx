@@ -26,7 +26,7 @@ const PlayTime = ({
 
 
     return <>
-        <div className={s.timeContainer}>
+        <div className={s.timeContainer} >
             <div className={s.time}>
                 <span ref={nowR} className={s.timeText}></span> / <span ref={totalR} className={s.timeText}></span>
             </div>
