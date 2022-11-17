@@ -12,6 +12,7 @@ import SentenceT from "../lib/SentenceT";
 import ReactPlayer from "react-player";
 import KeyListener from "../lib/KeyListener";
 import BorderProgressBar from "../components/BorderProgressBar";
+import PlayTime from "../components/PlayTime";
 
 export default function Home() {
     const playerRef = useRef<ReactPlayer>()
@@ -132,6 +133,9 @@ export default function Home() {
                             pushTimeState={pushTimeState}
                             jumpTextState={jumpTextState}
                         />
+                    </div>
+                    <div className={'menu'}>
+                        <PlayTime currentTimeState={currentTimeState} totalTimeState={totalTmeState}/>
                     </div>
                     <div className='underline-subtitle'>
                         <MainSubtitle currentSubtleState={currentSubtleState}/>

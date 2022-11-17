@@ -1,0 +1,21 @@
+.timeContainer{
+    display: flex;
+    flex-direction: column-reverse;
+    height: 5vh;
+    overflow: hidden;
+    z-index: 90;
+}
+.time{
+    align-self: flex-end;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+.timeText{
+    transition: 0.2s;
+    border-radius: 5px;
+    padding: 0 5px
+}
+.timeText:hover {
+    transition: 0.2s;
+    background-color: rgba(255, 255, 255, 0.2);
+}
