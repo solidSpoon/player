@@ -1,10 +1,12 @@
 import React, {Component, Fragment} from 'react';
 import style from './UplodeButtom.module.css'
 import SentenceT from "../lib/SentenceT";
+import FileT from "../lib/FileT";
 
 interface UploadPhotoParam {
     fileState: [string, React.Dispatch<React.SetStateAction<string>>],
-    srcState: [string, React.Dispatch<React.SetStateAction<string>>]
+    srcState: [string, React.Dispatch<React.SetStateAction<string>>],
+    fileTState: [FileT, React.Dispatch<React.SetStateAction<FileT>>],
 }
 
 export default class UploadPhoto extends Component {
@@ -13,6 +15,7 @@ export default class UploadPhoto extends Component {
     private setFileState: any;
     private fileState: any;
     private fileInputEl: React.RefObject<HTMLInputElement>;
+    private setFile: React.Dispatch<React.SetStateAction<FileT>>;
 
     constructor(props: UploadPhotoParam) {
         super(props)
