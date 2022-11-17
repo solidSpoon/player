@@ -11,6 +11,7 @@ import TransFiller from "../lib/TransFiller";
 import SentenceT from "../lib/SentenceT";
 import ReactPlayer from "react-player";
 import KeyListener from "../lib/KeyListener";
+import BorderProgressBar from "../components/BorderProgressBar";
 
 export default function Home() {
     const playerRef = useRef<ReactPlayer>()
@@ -23,7 +24,7 @@ export default function Home() {
     const [srcUrl] = srcState;
     const subtitleState = useState<SentenceT[]>([]);
     const [subtitles, setSubtitles] = subtitleState;
-
+    const totalTmeState = useState<number>();
     const pushTimeState = useState<number>(Date.now);
     const jumpTextState = useState<SentenceT>();
     const jumpTimeState = useState<number>();
@@ -35,6 +36,7 @@ export default function Home() {
                     currentTimeState={currentTimeState}
                     videoFile={videoFile}
                     playingState={playingState}
+                    totalTmeState={totalTmeState}
                 />;
             const container = document.getElementById("player-id");
             const root = createRoot(container); // createRoot(container!) if you use TypeScript
@@ -101,36 +103,43 @@ export default function Home() {
         srcState: srcState
     }
     return (
-        <Keyevent
-            className="TopSide"
-            events={keyListener.getObj()}
-            needFocusing={true}
-        >
-            <div className='container'>
-                <div className='player' id={"player-id"}>
-                    {/*<Player*/}
-                    {/*    playerRef={playerRef}*/}
-                    {/*    currentTimeState={currentTimeState}*/}
-                    {/*    videoFile={videoFile}*/}
-                    {/*    playingState={playingState}*/}
-                    {/*/>*/}
+        <>
+            <Keyevent
+                className="TopSide"
+                events={keyListener.getObj()}
+                needFocusing={true}
+            >
+                <div className='container'
+                     onKeyDown={event => {
+                         console.log(event.key)
+                     }}
+                >
+                    <div className='player' id={"player-id"}>
+                        {/*<Player*/}
+                        {/*    playerRef={playerRef}*/}
+                        {/*    currentTimeState={currentTimeState}*/}
+                        {/*    videoFile={videoFile}*/}
+                        {/*    playingState={playingState}*/}
+                        {/*/>*/}
+                    </div>
+                    <div className='subtitle' id={"subtitle-id"}>
+                        <Subtitle
+                            playerRef={playerRef}
+                            subtitlesState={subtitleState}
+                            currentTimeState={currentTimeState}
+                            currentSubtleState={currentSubtleState}
+                            jumpTimeState={jumpTimeState}
+                            pushTimeState={pushTimeState}
+                            jumpTextState={jumpTextState}
+                        />
+                    </div>
+                    <div className='underline-subtitle'>
+                        <MainSubtitle currentSubtleState={currentSubtleState}/>
+                        <UploadPhoto {...uploadPhotoParams}/>
+                    </div>
                 </div>
-                <div className='subtitle' id={"subtitle-id"}>
-                    <Subtitle
-                        playerRef={playerRef}
-                        subtitlesState={subtitleState}
-                        currentTimeState={currentTimeState}
-                        currentSubtleState={currentSubtleState}
-                        jumpTimeState={jumpTimeState}
-                        pushTimeState={pushTimeState}
-                        jumpTextState={jumpTextState}
-                    />
-                </div>
-                <div className='underline-subtitle'>
-                    <MainSubtitle currentSubtleState={currentSubtleState}/>
-                    <UploadPhoto {...uploadPhotoParams}/>
-                </div>
-            </div>
-        </Keyevent>
+                <BorderProgressBar currentTimeState={currentTimeState} totalTimeState={totalTmeState}/>
+            </Keyevent>
+        </>
     )
 }
