@@ -35,4 +35,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /db/sentence.db
+/db/sentence.db
 /db/progress.db
