@@ -2,7 +2,7 @@ import style from './MainSubt.module.css'
 import React, {useEffect, useState} from 'react';
 import TransableSubtLine from "./TransableSubtLine";
 import ReactDOM from 'react-dom/client'
-import SentenceT from "../lib/SentenceT";
+import SentenceT from "../lib/param/SentenceT";
 
 interface MainSubtitleParam {
     currentSubtleState: [SentenceT, React.Dispatch<React.SetStateAction<SentenceT>>]

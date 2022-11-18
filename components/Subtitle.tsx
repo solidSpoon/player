@@ -2,7 +2,7 @@ import style from './Subtitle.module.css'
 import {useEffect} from "react";
 import {isVisible} from "../lib/isVisible";
 import searchSubtitle from "../lib/searchSubtitle";
-import SentenceT from "../lib/SentenceT";
+import SentenceT from "../lib/param/SentenceT";
 
 const Subtitle = ({
                       playerRef,

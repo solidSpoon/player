@@ -1,5 +1,5 @@
 import axios from "axios";
-import SentenceT from "./SentenceT";
+import SentenceT from "./param/SentenceT";
 
 class TransFiller {
     private readonly subtitles: Array<SentenceT>;
@@ -31,7 +31,7 @@ class TransFiller {
         if (buf.isEmpty()) {
             return;
         }
-        setTimeout(() => this.doFillTranslate(buf), buf.delay * 1000);
+        setTimeout(() => this.doFillTranslate(buf), 500);
     }
 
     doFillTranslate(buf: Buf): void {

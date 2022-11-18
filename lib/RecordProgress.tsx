@@ -1,6 +1,6 @@
 import {useEffect, useRef} from "react";
 import axios from "axios";
-import FileT from "./FileT";
+import FileT from "./param/FileT";
 
 const RecordProgress = (
     currentTimeState: [number, React.Dispatch<React.SetStateAction<number>>],

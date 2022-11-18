@@ -1,5 +1,5 @@
 import {Dispatch, MutableRefObject, ReactElement, SetStateAction, useState} from "react";
-import SentenceT from "./SentenceT";
+import SentenceT from "./param/SentenceT";
 import ReactPlayer from "react-player";
 
 class KeyListener {

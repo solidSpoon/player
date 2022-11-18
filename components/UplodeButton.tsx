@@ -1,7 +1,7 @@
 import React, {Component, Fragment} from 'react';
 import style from './UplodeButtom.module.css'
-import FileT from "../lib/FileT";
-import UploadPhotoParam from "../lib/UploadPhotoParam";
+import FileT from "../lib/param/FileT";
+import UploadPhotoParam from "../lib/param/UploadPhotoParam";
 
 export default class UploadPhoto extends Component {
     private srcUrl: FileT;

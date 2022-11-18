@@ -8,13 +8,13 @@ import {createRoot} from 'react-dom/client';
 import parseSrtSubtitles from "../lib/parseSrt";
 import axios from "axios";
 import TransFiller from "../lib/TransFiller";
-import SentenceT from "../lib/SentenceT";
+import SentenceT from "../lib/param/SentenceT";
 import ReactPlayer from "react-player";
 import KeyListener from "../lib/KeyListener";
 import BorderProgressBar from "../components/BorderProgressBar";
 import PlayTime from "../components/PlayTime";
-import FileT from "../lib/FileT";
-import UploadPhotoParam from "../lib/UploadPhotoParam";
+import FileT from "../lib/param/FileT";
+import UploadPhotoParam from "../lib/param/UploadPhotoParam";
 import RecordProgress from '../lib/RecordProgress';
 
 export default function Home() {

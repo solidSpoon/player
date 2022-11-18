@@ -1,4 +1,4 @@
-import FileT from "../FileT";
+import FileT from "./FileT";
 import {MutableRefObject} from "react";
 import ReactPlayer from "react-player";
 

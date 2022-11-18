@@ -1,4 +1,4 @@
-import SentenceT from "./SentenceT";
+import SentenceT from "./param/SentenceT";
 
 const searchSubtitle = (subtitles: SentenceT[], currentTime: number, currentSubtitle: SentenceT): SentenceT => {
     if (currentSubtitle === undefined || currentSubtitle.fileUrl !== subtitles[0].fileUrl) {

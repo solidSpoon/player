@@ -8,7 +8,7 @@
  * @param  string srt 字幕文件的内容
  * @return *[]
  */
-import SentenceT from "./SentenceT";
+import SentenceT from "./param/SentenceT";
 
 export default function parseSrtSubtitles(srt: string): Array<SentenceT> {
     const subtitles: Array<SentenceT> = [];
