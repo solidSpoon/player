@@ -1,30 +1,22 @@
 import React, {Component, Fragment} from 'react';
 import style from './UplodeButtom.module.css'
-import SentenceT from "../lib/SentenceT";
 import FileT from "../lib/FileT";
-
-interface UploadPhotoParam {
-    fileState: [string, React.Dispatch<React.SetStateAction<string>>],
-    srcState: [string, React.Dispatch<React.SetStateAction<string>>],
-    fileTState: [FileT, React.Dispatch<React.SetStateAction<FileT>>],
-}
+import UploadPhotoParam from "../lib/UploadPhotoParam";
 
 export default class UploadPhoto extends Component {
-    private srcUrl: string;
-    private setSrcUrl: any;
-    private setFileState: any;
-    private fileState: any;
+    private srcUrl: FileT;
+    private setSrcFile: React.Dispatch<React.SetStateAction<FileT>>;
+    private setVideoFile: React.Dispatch<React.SetStateAction<FileT>>;
+    private fileState: FileT;
     private fileInputEl: React.RefObject<HTMLInputElement>;
-    private setFile: React.Dispatch<React.SetStateAction<FileT>>;
-
     constructor(props: UploadPhotoParam) {
         super(props)
         this.state = {
             submitLoading: false,
         }
         this.fileInputEl = React.createRef();
-        [this.fileState, this.setFileState] = props.fileState;
-        [this.srcUrl, this.setSrcUrl] = props.srcState;
+        [this.fileState, this.setVideoFile] = props.videoFileState;
+        [this.srcUrl, this.setSrcFile] = props.srcFileState;
     }
 
     handlePhoto = async (event) => {
@@ -33,12 +25,14 @@ export default class UploadPhoto extends Component {
         await this.setState({submitLoading: true})
 
         files.forEach((file, i) => {
+            const fileT = new FileT();
+            fileT.fileName = file.name;
+            fileT.objectUrl = this.getFileUrl(file);
             const isSrt = file.name.endsWith("srt");
-            let url = this.getFileUrl(file);
             if (isSrt) {
-                this.setSrcUrl(url);
+                this.setSrcFile(fileT);
             } else {
-                this.setFileState(url);
+                this.setVideoFile(fileT);
             }
         })
     }

@@ -3,12 +3,12 @@ import ProgressEntity from "../../ServerLib/ProgressEntity";
 import crypto from "crypto";
 
 export default function handler(req, res) {
-    // const fileName: string = req.query.fileName;
-    const fileName: string = 'baba'
+    const fileName: string = req.query.fileName;
+    const progress: number = req.query.progress;
     const progressEntity = new ProgressEntity();
     progressEntity.fileName = fileName;
     progressEntity.hash = crypto.createHash('md5').update(fileName).digest("hex");
-    progressEntity.progress = 21;
+    progressEntity.progress = progress;
     ProgressCache.updateProgress(progressEntity);
     res.status(200).json();
 

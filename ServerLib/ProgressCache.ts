@@ -14,19 +14,21 @@ class ProgressCache {
     }
 
     public static updateProgress(progress: ProgressEntity): void {
+        progress.updateDate = Date.now();
         const tdb = this.db;
-        tdb.find({
+        console.log(progress)
+        tdb.update({
             hash: progress.hash
-        }, function (error, docs) {
-            progress.updateDate = Date.now();
-            if (docs.length === 0) {
-                tdb.insert(progress);
-            } else {
-                if (docs.length > 1) {
-                    console.log("progress length bigger than one")
-                }
-                tdb.update(progress, {
+        }, progress, {upsert: true, multi: true}, (err, num) => {
+            console.log(num)
+            if (num > 1) {
+                console.log(">1")
+                tdb.remove({
                     hash: progress.hash
+                }, {multi: true}, function (error, docs) {
+                    console.log(error)
+                    console.log(docs)
+                    tdb.insert(progress);
                 })
             }
         })

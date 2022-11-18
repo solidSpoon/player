@@ -13,22 +13,26 @@ import ReactPlayer from "react-player";
 import KeyListener from "../lib/KeyListener";
 import BorderProgressBar from "../components/BorderProgressBar";
 import PlayTime from "../components/PlayTime";
+import FileT from "../lib/FileT";
+import UploadPhotoParam from "../lib/UploadPhotoParam";
+import RecordProgress from '../lib/RecordProgress';
 
 export default function Home() {
     const playerRef = useRef<ReactPlayer>()
     const currentTimeState = useState(0);
     const currentSubtleState = useState<SentenceT>();
-    const videoFileState = useState<string>();
+    const videoFileState = useState<FileT>();
     const [videoFile] = videoFileState;
     const playingState = useState<boolean>(true);
-    const srcState = useState<string>();
-    const [srcUrl] = srcState;
+    const srcState = useState<FileT>();
+    const [srcFile] = srcState;
     const subtitleState = useState<SentenceT[]>([]);
     const [subtitles, setSubtitles] = subtitleState;
     const totalTmeState = useState<number>();
     const pushTimeState = useState<number>(Date.now);
     const jumpTextState = useState<SentenceT>();
     const jumpTimeState = useState<number>();
+
     useEffect(() => {
         if (videoFile !== undefined) {
             const newEle =
@@ -47,22 +51,22 @@ export default function Home() {
 
 
     useEffect(() => {
-        if (srcUrl !== undefined) {
+        if (srcFile !== undefined) {
 
             axios
-                .get(srcUrl)
+                .get(srcFile.objectUrl)
                 .then(function (response) {
-                    updateSubtitle(response.data, srcUrl)
+                    updateSubtitle(response.data, srcFile)
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
         }
-    }, [srcUrl]);
+    }, [srcFile]);
 
-    const updateSubtitle = (str: string, fileUrl: string): void => {
+    const updateSubtitle = (str: string, fileUrl: FileT): void => {
         const srtSubtitles = parseSrtSubtitles(str);
-        srtSubtitles.forEach(item => item.fileUrl = fileUrl)
+        srtSubtitles.forEach(item => item.fileUrl = fileUrl.objectUrl)
         new TransFiller(srtSubtitles).fillTranslate();
         setSubtitles(srtSubtitles);
     };
@@ -98,11 +102,10 @@ export default function Home() {
             />
         root.render(newEle);
     }, [subtitles]);
-
-    const uploadPhotoParams = {
-        fileState: videoFileState,
-        srcState: srcState
-    }
+    RecordProgress(currentTimeState, videoFileState);
+    const uploadPhotoParams = new UploadPhotoParam();
+    uploadPhotoParams.videoFileState = videoFileState;
+    uploadPhotoParams.srcFileState = srcState;
     return (
         <>
             <Keyevent
