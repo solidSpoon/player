@@ -16,6 +16,7 @@ import PlayTime from "../components/PlayTime";
 import FileT from "../lib/param/FileT";
 import UploadPhotoParam from "../lib/param/UploadPhotoParam";
 import RecordProgress from '../lib/RecordProgress';
+import {playState} from "../lib/param/PlayerParam";
 
 export default function Home() {
     const playerRef = useRef<ReactPlayer>()
@@ -39,11 +40,23 @@ export default function Home() {
             const newEle =
                 <Player
                     playerRef={playerRef}
-                    currentTimeState={currentTimeState}
                     videoFile={videoFile}
-                    playingState={playingState}
-                    totalTmeState={totalTmeState}
-                />;
+                    onProgress={(time) => currentTimeState[1](time)}
+                    onPlayingStateChange={
+                        (state) => {
+                            if (playState.play === state) {
+                                playingState[1](true);
+                            }
+                            if (playState.pause === state) {
+                                playingState[1](false);
+                            }
+                        }
+                    }
+                    onTotalTimeChange={
+                        (time) => {
+                            totalTmeState[1](time);
+                        }
+                    }/>;
             const container = document.getElementById("player-id");
             const root = createRoot(container); // createRoot(container!) if you use TypeScript
             root.render(newEle);
@@ -111,7 +124,7 @@ export default function Home() {
     useEffect(() => {
         if (progressRoot.current === undefined) {
             const ele = document.getElementById('progressBarRef')
-           progressRoot.current = ReactDOM.createRoot(ele);
+            progressRoot.current = ReactDOM.createRoot(ele);
         }
 
         // @ts-ignore
