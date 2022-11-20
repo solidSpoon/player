@@ -1,7 +1,7 @@
 import FileT from "./FileT";
 
 class UploadPhotoParam {
-    videoFileState: [FileT, React.Dispatch<React.SetStateAction<FileT>>];
-    srcFileState: [FileT, React.Dispatch<React.SetStateAction<FileT>>];
+    onFileChange: (file: FileT) => void;
 }
+
 export default UploadPhotoParam;

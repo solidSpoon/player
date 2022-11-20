@@ -13,15 +13,14 @@ import ReactPlayer from "react-player";
 import KeyListener from "../lib/KeyListener";
 import BorderProgressBar from "../components/BorderProgressBar";
 import PlayTime from "../components/PlayTime";
-import FileT from "../lib/param/FileT";
-import UploadPhotoParam from "../lib/param/UploadPhotoParam";
+import FileT, {FileType} from "../lib/param/FileT";
 import RecordProgress from '../lib/RecordProgress';
 import {playState} from "../lib/param/PlayerParam";
 
 export default function Home() {
     const playerRef = useRef<ReactPlayer>()
     const currentTimeState = useState(0);
-    const [ct, gct] = currentTimeState;
+    const [ct] = currentTimeState;
     const currentSubtleState = useState<SentenceT>();
     const videoFileState = useState<FileT>();
     const [videoFile] = videoFileState;
@@ -117,9 +116,6 @@ export default function Home() {
         root.render(newEle);
     }, [subtitles]);
     RecordProgress(currentTimeState, videoFileState);
-    const uploadPhotoParams = new UploadPhotoParam();
-    uploadPhotoParams.videoFileState = videoFileState;
-    uploadPhotoParams.srcFileState = srcState;
     const progressRoot = useRef();
     useEffect(() => {
         if (progressRoot.current === undefined) {
@@ -132,6 +128,16 @@ export default function Home() {
             <BorderProgressBar currentTime={ct} totalTime={totalTmeState[0]}/>
         )
     }, [ct])
+
+
+    const onFileChange = (file: FileT) => {
+        if (FileType.VIDEO === file.fileType) {
+            videoFileState[1](file);
+        }
+        if (FileType.SUBTITLE === file.fileType) {
+            srcState[1](file);
+        }
+    }
     return (
         <>
             <Keyevent
@@ -162,7 +168,7 @@ export default function Home() {
                     </div>
                     <div className='underline-subtitle'>
                         <MainSubtitle currentSubtleState={currentSubtleState}/>
-                        <UploadPhoto {...uploadPhotoParams}/>
+                        <UploadPhoto onFileChange={onFileChange}/>
                     </div>
                 </div>
                 <div id={'progressBarRef'}>

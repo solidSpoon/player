@@ -1,22 +1,18 @@
 import React, {Component, Fragment} from 'react';
 import style from './UplodeButtom.module.css'
-import FileT from "../lib/param/FileT";
+import FileT, {FileType} from "../lib/param/FileT";
 import UploadPhotoParam from "../lib/param/UploadPhotoParam";
 
-export default class UploadPhoto extends Component {
-    private srcUrl: FileT;
-    private setSrcFile: React.Dispatch<React.SetStateAction<FileT>>;
-    private setVideoFile: React.Dispatch<React.SetStateAction<FileT>>;
-    private fileState: FileT;
-    private fileInputEl: React.RefObject<HTMLInputElement>;
-    constructor(props: UploadPhotoParam) {
+export default class UploadPhoto extends Component<UploadPhotoParam,any> {
+    private readonly fileInputEl: React.RefObject<HTMLInputElement>;
+
+    constructor(props) {
         super(props)
         this.state = {
             submitLoading: false,
         }
         this.fileInputEl = React.createRef();
-        [this.fileState, this.setVideoFile] = props.videoFileState;
-        [this.srcUrl, this.setSrcFile] = props.srcFileState;
+
     }
 
     handlePhoto = async (event) => {
@@ -30,10 +26,11 @@ export default class UploadPhoto extends Component {
             fileT.objectUrl = this.getFileUrl(file);
             const isSrt = file.name.endsWith("srt");
             if (isSrt) {
-                this.setSrcFile(fileT);
+                fileT.fileType = FileType.SUBTITLE;
             } else {
-                this.setVideoFile(fileT);
+                fileT.fileType = FileType.VIDEO;
             }
+            this.props.onFileChange(fileT);
         })
     }
 
