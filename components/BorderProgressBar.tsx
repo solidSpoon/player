@@ -1,10 +1,10 @@
 import ProgressBar from "@ramonak/react-progress-bar";
-import {ReactElement, useEffect, useRef, useState} from "react";
+import {ReactElement} from "react";
 import s from './BorderProgressBar.module.css';
 
 const BorderProgressBar = ({
-                               currentTime=0,
-                               totalTime=0
+                               currentTime = 0,
+                               totalTime = 0
                            }): ReactElement => {
 
     const percentage = () => {
