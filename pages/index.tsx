@@ -4,7 +4,7 @@ import Subtitle from "../components/Subtitle";
 import MainSubtitle from "../components/MainSubt";
 import Keyevent from "react-keyevent";
 import UploadPhoto from "../components/UplodeButton";
-import {createRoot} from 'react-dom/client';
+import ReactDOM, {createRoot} from 'react-dom/client';
 import parseSrtSubtitles from "../lib/parseSrt";
 import axios from "axios";
 import TransFiller from "../lib/TransFiller";
@@ -20,6 +20,7 @@ import RecordProgress from '../lib/RecordProgress';
 export default function Home() {
     const playerRef = useRef<ReactPlayer>()
     const currentTimeState = useState(0);
+    const [ct, gct] = currentTimeState;
     const currentSubtleState = useState<SentenceT>();
     const videoFileState = useState<FileT>();
     const [videoFile] = videoFileState;
@@ -106,6 +107,18 @@ export default function Home() {
     const uploadPhotoParams = new UploadPhotoParam();
     uploadPhotoParams.videoFileState = videoFileState;
     uploadPhotoParams.srcFileState = srcState;
+    const progressRoot = useRef();
+    useEffect(() => {
+        if (progressRoot.current === undefined) {
+            const ele = document.getElementById('progressBarRef')
+           progressRoot.current = ReactDOM.createRoot(ele);
+        }
+
+        // @ts-ignore
+        progressRoot.current.render(
+            <BorderProgressBar currentTime={ct} totalTime={totalTmeState[0]}/>
+        )
+    }, [ct])
     return (
         <>
             <Keyevent
@@ -119,12 +132,6 @@ export default function Home() {
                      }}
                 >
                     <div className='player' id={"player-id"}>
-                        {/*<Player*/}
-                        {/*    playerRef={playerRef}*/}
-                        {/*    currentTimeState={currentTimeState}*/}
-                        {/*    videoFile={videoFile}*/}
-                        {/*    playingState={playingState}*/}
-                        {/*/>*/}
                     </div>
                     <div className='subtitle' id={"subtitle-id"}>
                         <Subtitle
@@ -145,7 +152,10 @@ export default function Home() {
                         <UploadPhoto {...uploadPhotoParams}/>
                     </div>
                 </div>
-                <BorderProgressBar currentTimeState={currentTimeState} totalTimeState={totalTmeState}/>
+                <div id={'progressBarRef'}>
+                    <BorderProgressBar/>
+                </div>
+
             </Keyevent>
         </>
     )
