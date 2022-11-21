@@ -1,3 +1,5 @@
+import {MutableRefObject, ReactElement} from "react";
+
 class SentenceT {
     key: string;
     /**
@@ -22,6 +24,7 @@ class SentenceT {
     nextItem: SentenceT;
     prevItem: SentenceT;
     subtleDiv: HTMLElement;
+    subtleEle: MutableRefObject<ReactElement>;
     public getPrevItem = (): SentenceT => {
         return this.prevItem;
     }

@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react'
-import Player from "../components/Player";
+import Player, {playState} from "../components/Player";
 import Subtitle from "../components/Subtitle";
 import MainSubtitle from "../components/MainSubt";
 import Keyevent from "react-keyevent";
@@ -9,16 +9,14 @@ import parseSrtSubtitles from "../lib/parseSrt";
 import axios from "axios";
 import TransFiller from "../lib/TransFiller";
 import SentenceT from "../lib/param/SentenceT";
-import ReactPlayer from "react-player";
 import KeyListener from "../lib/KeyListener";
 import BorderProgressBar from "../components/BorderProgressBar";
 import PlayTime from "../components/PlayTime";
 import FileT, {FileType} from "../lib/param/FileT";
 import RecordProgress from '../lib/RecordProgress';
-import {playState} from "../lib/param/PlayerParam";
 
 export default function Home() {
-    const playerRef = useRef<ReactPlayer>()
+    const playerRef = useRef<Player>()
     const currentTimeState = useState(0);
     const [ct] = currentTimeState;
     const currentSubtleState = useState<SentenceT>();
@@ -30,15 +28,10 @@ export default function Home() {
     const subtitleState = useState<SentenceT[]>([]);
     const [subtitles, setSubtitles] = subtitleState;
     const totalTmeState = useState<number>();
-    const pushTimeState = useState<number>(Date.now);
-    const jumpTextState = useState<SentenceT>();
-    const jumpTimeState = useState<number>();
-
     useEffect(() => {
         if (videoFile !== undefined) {
             const newEle =
                 <Player
-                    playerRef={playerRef}
                     videoFile={videoFile}
                     onProgress={(time) => currentTimeState[1](time)}
                     onPlayingStateChange={
@@ -85,14 +78,14 @@ export default function Home() {
     };
 
     const [subtitleRoot, setSubtitleRoot] = useState(null);
-    const keyListener = new KeyListener(
-        currentSubtleState,
-        pushTimeState,
-        jumpTextState,
-        jumpTimeState,
-        playerRef,
-        playingState
-    );
+    // const keyListener = new KeyListener(
+    //     currentSubtleState,
+    //     pushTimeState,
+    //     jumpTextState,
+    //     jumpTimeState,
+    //     // playerRef,
+    //     playingState
+    // );
     useEffect(() => {
         if (subtitles === undefined) {
             return;
@@ -105,17 +98,30 @@ export default function Home() {
         }
         const newEle =
             <Subtitle
-                playerRef={playerRef}
-                subtitlesState={subtitleState}
-                currentTimeState={currentTimeState}
-                currentSubtleState={currentSubtleState}
-                pushTimeState={pushTimeState}
-                jumpTimeState={jumpTimeState}
-                jumpTextState={jumpTextState}
+                getCurrentTime={() => ct}
+                onCurrentSentenceChange={(currentSentence) => currentSubtleState[1](currentSentence)}
+                seekTo={(time) => playerRef.current.seekTo(time)}
+                subtitleFile={srcFile}
             />
-        root.render(newEle);
+        const element = subtitleRef.current.render();
+        console.log(element)
+        root.render(element);
+        console.log('update')
+
     }, [subtitles]);
-    RecordProgress(currentTimeState, videoFileState);
+
+    RecordProgress({
+        getCurrentProgress: () => ctr.current,
+        getCurrentVideoFile: () => vfr.current
+    });
+    const ctr = useRef<number>();
+    const vfr = useRef<FileT>();
+    useEffect(() => {
+        ctr.current = ct;
+        vfr.current = videoFile;
+    }, [ct, videoFile])
+
+
     const progressRoot = useRef();
     useEffect(() => {
         if (progressRoot.current === undefined) {
@@ -138,44 +144,43 @@ export default function Home() {
             srcState[1](file);
         }
     }
+    const subtitleRef = useRef<Subtitle>()
     return (
         <>
-            <Keyevent
-                className="TopSide"
-                events={keyListener.getObj()}
-                needFocusing={true}
+            {/*<Keyevent*/}
+            {/*    className="TopSide"*/}
+            {/*    events={keyListener.getObj()}*/}
+            {/*    needFocusing={true}*/}
+            {/*>*/}
+            <div className='container'
+                 onKeyDown={event => {
+                     console.log(event.key)
+                 }}
             >
-                <div className='container'
-                     onKeyDown={event => {
-                         console.log(event.key)
-                     }}
-                >
-                    <div className='player' id={"player-id"}>
-                    </div>
-                    <div className='subtitle' id={"subtitle-id"}>
-                        <Subtitle
-                            playerRef={playerRef}
-                            subtitlesState={subtitleState}
-                            currentTimeState={currentTimeState}
-                            currentSubtleState={currentSubtleState}
-                            jumpTimeState={jumpTimeState}
-                            pushTimeState={pushTimeState}
-                            jumpTextState={jumpTextState}
-                        />
-                    </div>
-                    <div className={'menu'}>
-                        <PlayTime currentTimeState={currentTimeState} totalTimeState={totalTmeState}/>
-                    </div>
-                    <div className='underline-subtitle'>
-                        <MainSubtitle currentSubtleState={currentSubtleState}/>
-                        <UploadPhoto onFileChange={onFileChange}/>
-                    </div>
+                <div className='player' id={"player-id"}>
                 </div>
-                <div id={'progressBarRef'}>
-                    <BorderProgressBar/>
+                <div className='subtitle' id={"subtitle-id"}>
+                    <Subtitle
+                        ref={subtitleRef}
+                        getCurrentTime={() => ct}
+                        onCurrentSentenceChange={(currentSentence) => currentSubtleState[1](currentSentence)}
+                        seekTo={(time) => playerRef.current.seekTo(time)}
+                        subtitleFile={srcFile}
+                    />
                 </div>
+                <div className={'menu'}>
+                    <PlayTime currentTimeState={currentTimeState} totalTimeState={totalTmeState}/>
+                </div>
+                <div className='underline-subtitle'>
+                    <MainSubtitle currentSubtleState={currentSubtleState}/>
+                    <UploadPhoto onFileChange={onFileChange}/>
+                </div>
+            </div>
+            <div id={'progressBarRef'}>
+                <BorderProgressBar/>
+            </div>
 
-            </Keyevent>
+            {/*</Keyevent>*/}
         </>
     )
 }
