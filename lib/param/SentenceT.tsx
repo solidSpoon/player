@@ -1,4 +1,5 @@
 import {MutableRefObject, ReactElement} from "react";
+import SideSentence from "../../components/SideSentence";
 
 class SentenceT {
     key: string;
@@ -23,8 +24,7 @@ class SentenceT {
     msTranslate: string;
     nextItem: SentenceT;
     prevItem: SentenceT;
-    subtleDiv: HTMLElement;
-    subtleEle: MutableRefObject<ReactElement>;
+    element: MutableRefObject<SideSentence>;
     public getPrevItem = (): SentenceT => {
         return this.prevItem;
     }

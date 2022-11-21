@@ -1,13 +1,12 @@
 import style from './Subtitle.module.css'
-import {Component, ReactElement, useEffect, useRef} from "react";
-import {isVisible} from "../lib/isVisible";
+import React, {Component, ReactElement} from "react";
 import searchSubtitle from "../lib/searchSubtitle";
 import SentenceT from "../lib/param/SentenceT";
 import FileT from "../lib/param/FileT";
 import axios from "axios";
 import parseSrtSubtitles from "../lib/parseSrt";
 import TransFiller from "../lib/TransFiller";
-import {clearTimeout} from "timers";
+import SideSentence from "./SideSentence";
 
 interface SubtitleParam {
     subtitleFile: FileT,
@@ -28,64 +27,76 @@ interface IntervalParam {
 export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
     private timer: NodeJS.Timer;
     private currentSentence: SentenceT;
+    private currentSentenceUpdateTime: number;
 
     constructor(props) {
         super(props);
         this.state = {
             subtitles: undefined
         }
+        this.currentSentence = undefined;
+        this.currentSentenceUpdateTime = Date.now();
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.subtitleFile === this.props.subtitleFile) {
+            return;
+        }
+        this.initSubtitles();
     }
 
     componentDidMount() {
         this.initSubtitles();
-        this.timer = setInterval(()=>this.interval(this.intervalParam), 1000);
+        this.timer = setInterval(() => this.interval(this.intervalParam), 1000);
+    }
+
+    public jumpNext(): void {
+        let target = this.getCurrentSentence().getNestItem();
+        if (target === undefined) {
+            target = this.getCurrentSentence();
+        }
+        this.jumpTo(target)
+    }
+
+    public jumpPrev(): void {
+        let target = this.getCurrentSentence().getPrevItem();
+        if (target === undefined) {
+            target = this.getCurrentSentence();
+        }
+        this.jumpTo(target)
+    }
+
+    private jumpTo(sentence: SentenceT) {
+        if (sentence === undefined || sentence === this.currentSentence) {
+            return;
+        }
+        sentence.element.current.show();
+        if (this.currentSentence !== undefined) {
+            this.currentSentence.element.current.hide();
+        }
+        this.props.onCurrentSentenceChange(sentence);
+        this.props.seekTo(sentence.timeStart);
+        this.currentSentence = sentence;
+        this.currentSentenceUpdateTime = Date.now();
     }
 
     private intervalParam: IntervalParam = {
         getCurrentTime: () => this.props.getCurrentTime(),
         sentences: () => this.state.subtitles
     }
-    // private getCurrentTime = () => this.props.getCurrentTime();
-    // private sentences = () => this.state.subtitles;
 
     private interval(intervalParam: IntervalParam) {
         console.log('interval')
         if (intervalParam.sentences() === undefined) {
             return;
         }
-        const currentTime = intervalParam.getCurrentTime();
-        const jump = currentTime;
-
-        const subtitle = this.currentSentence;
-        // const find: SentenceT = Date.now() - pushTime > 600 ? searchSubtitle(subtitles, currentTime, subtitle) : jumpText;
-        const find: SentenceT = searchSubtitle(intervalParam.sentences(), intervalParam.getCurrentTime(), subtitle)
-        if (find === undefined || find === subtitle) {
-            return;
-        }
-        if (find.subtleDiv === undefined) {
-            find.subtleDiv = document.getElementById("Subtitle-subt" + find.key);
-        }
-        const child = find.subtleDiv;
-        const icon = child.querySelector<HTMLElement>('.' + style.subtitleItemIcon);
-        icon.style.visibility = "visible";
-        if (subtitle !== undefined) {
-            subtitle.subtleEle.current.props.visibility = "hidden"
-            // .getElementsByClassName(style.subtitleItemIcon)[0]
-            // .style.visibility = "hidden";
-        }
-        this.setCurrentSubtitle(find)
-        const parent = document.getElementById("Subtitle-subt");
-        if (!isVisible(child)) {
-            parent.scrollTo({
-                top: child.offsetTop - 50,
-                behavior: "smooth"
-            })
-        }
-
-
+        const find: SentenceT = this.getCurrentSentence();
+        console.log('find', find);
+        this.jumpTo(find);
     }
 
     private initSubtitles() {
+        console.log('initmethod')
         const srcFile = this.props.subtitleFile
         if (srcFile === undefined) {
             console.log('srcFileUndefind')
@@ -105,6 +116,14 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
     private updateSubtitle = (str: string, fileUrl: FileT): void => {
         const srtSubtitles = parseSrtSubtitles(str);
         srtSubtitles.forEach(item => item.fileUrl = fileUrl.objectUrl)
+        let lastSubtitle: SentenceT;
+        srtSubtitles.forEach(item => {
+            if (lastSubtitle !== undefined) {
+                lastSubtitle.nextItem = item;
+                item.prevItem = lastSubtitle;
+            }
+            lastSubtitle = item;
+        })
         new TransFiller(srtSubtitles).fillTranslate();
         this.setState({
             subtitles: srtSubtitles
@@ -117,50 +136,30 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
 
 
     private subtitleItems(): ReactElement[] {
-        const sentenceTS = this.state.subtitles;
-        if (sentenceTS === undefined) {
+        const sentences = this.state.subtitles;
+        if (sentences === undefined) {
             return;
         }
-        let lastSubtitle: SentenceT;
-
-        return sentenceTS.map((item) => {
-                if (lastSubtitle !== undefined) {
-                    lastSubtitle.nextItem = item;
-                    item.prevItem = lastSubtitle;
-                }
-                lastSubtitle = item;
-                const ref = useRef();
-                item.subtleEle = ref;
-                return <div
+        return sentences.map((item, index) => {
+                const ref = React.createRef<SideSentence>();
+                item.element = ref;
+                return <SideSentence
                     ref={ref}
-                    key={"Subtitle-subt" + item.key}
-                    id={"Subtitle-subt" + item.key}
-                    className={style.subtitleItem}
-                    onClick={() => {
-                        this.props.seekTo(item.timeStart);
-                        // if (playerRef.current === undefined) {
-                        //     return;
-                        // }
-                        // setPushTime(Date.now());
-                        // setJumpTime(item.timeStart);
-                        // setJumpText(item);
-                        // playerRef.current.seekTo(item.timeStart, 'seconds');
-                    }
-                    }>
-                    <div className={style.subtitleItemIcon}>
-                        👺
-                    </div>
-                    <div className={style.subtitleItemText}>
-                        {item.text}
-                    </div>
-                </div>;
+                    sentence={item}
+                    onClick={(sentence) => this.jumpTo(sentence)}
+                    key={index.toString()}/>
             }
         );
     }
 
-    private setCurrentSubtitle(find: SentenceT) {
-        this.props.onCurrentSentenceChange(find);
+    private getCurrentSentence(): SentenceT {
+        const isOverdue = Date.now() - this.currentSentenceUpdateTime > 600;
+        if (isOverdue || this.currentSentence === undefined) {
+            return searchSubtitle(this.state.subtitles, this.props.getCurrentTime(), this.currentSentence);
+        }
+        return this.currentSentence;
     }
+
 
     render() {
         console.log('Subtitle render')

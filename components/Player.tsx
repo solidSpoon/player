@@ -63,6 +63,9 @@ export default class Player extends Component<PlayerParam, PlayerState> {
     };
 
     render() {
+        if (this.props.videoFile === undefined) {
+            return;
+        }
         return (
             <ReactPlayer
                 id="react-player-id"
