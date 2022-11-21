@@ -3,31 +3,50 @@ import React, {Component} from 'react'
 import style from './Player.module.css'
 import axios from "axios";
 import FileT from "../lib/param/FileT";
+
 interface PlayerParam {
     videoFile: FileT;
     onProgress: (time: number) => void;
     onPlayingStateChange: (state: playState) => void;
-    onTotalTimeChange:(time:number)=>void;
+    onTotalTimeChange: (time: number) => void;
 }
+
 export enum playState {
     play = 1,
     pause = 0
 }
-interface PlayerState{
+
+interface PlayerState {
 
 }
-export default class Player extends Component<PlayerParam, PlayerState>{
+
+export default class Player extends Component<PlayerParam, PlayerState> {
     private readonly playerRef: React.MutableRefObject<ReactPlayer | undefined>;
+
     constructor(props) {
         super(props);
-        this.playerRef =React.createRef<ReactPlayer>();
+        this.playerRef = React.createRef<ReactPlayer>();
     }
-    public seekTo(time:number) {
-        this.playerRef.current.seekTo(time,"seconds");
+
+    getPlayer = () => {
+        return this.playerRef.current;
     }
-    private isReady = false;
-    private onReady = () => {
-        if (this.isReady) {
+
+    public seekTo(time: number) {
+        const player = this.getPlayer();
+        if (player === undefined) {
+            console.log('player undefined, cannot seekTo')
+        }
+        if (time === undefined) {
+            console.log('time undefined, cannot seekTo')
+        }
+        player.seekTo(time, "seconds");
+    }
+
+    private lastFile: FileT;
+    private onReady = (file: FileT) => {
+        console.log('onready', file.fileName)
+        if (file === this.lastFile) {
             return;
         }
         console.log('isready')
@@ -40,7 +59,7 @@ export default class Player extends Component<PlayerParam, PlayerState>{
             console.log(response);
             this.seekTo(response.data.progress);
         });
-        this.isReady = true;
+        this.lastFile = file;
     };
 
     render() {
@@ -63,10 +82,8 @@ export default class Player extends Component<PlayerParam, PlayerState>{
                 }}
                 onPlay={() => this.props.onPlayingStateChange(playState.play)}
                 onPause={() => this.props.onPlayingStateChange(playState.pause)}
-                onReady={this.onReady}
+                onReady={() => this.onReady(this.props.videoFile)}
             />
-
         )
-
     }
 }
