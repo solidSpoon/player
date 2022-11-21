@@ -1,31 +1,35 @@
-import {useEffect, useRef} from "react";
+import {Component, useEffect, useRef} from "react";
 import axios from "axios";
 import FileT from "./param/FileT";
 
-const RecordProgress = (
-    currentTimeState: [number, React.Dispatch<React.SetStateAction<number>>],
-    currentVideoFileState: [FileT, React.Dispatch<React.SetStateAction<FileT>>]
-) => {
-    const [currentVideoFile] = currentVideoFileState;
-    const [currentTime] = currentTimeState;
-    const lastTime = useRef<number>(0);
+interface RecordProgressParam {
+    getCurrentProgress: () => number;
+    getCurrentVideoFile: () => FileT;
+}
+
+const RecordProgress = (props: RecordProgressParam) => {
     useEffect(() => {
-        const now = Date.now() / 1000;
-        if ((now - lastTime.current) < 1) {
-            return;
+        function method() {
+            if (props.getCurrentVideoFile() === undefined || props.getCurrentProgress() === undefined) {
+                return;
+            }
+            const fileName = props.getCurrentVideoFile().fileName;
+            const progress = props.getCurrentProgress();
+            console.log(fileName, progress)
+            axios.get('/api/updateProgress', {
+                params:
+                    {
+                        fileName: fileName,
+                        progress: progress
+                    }
+            });
         }
-        if (currentTime === undefined || currentVideoFile === undefined) {
-            return;
+
+        const interval = setInterval(method,1000);
+        return () => {
+            clearInterval(interval);
         }
-        axios.get('/api/updateProgress', {
-            params:
-                {
-                    fileName: currentVideoFile.fileName,
-                    progress: currentTime
-                }
-        });
-        lastTime.current = now;
-    }, [currentTime]);
+    }, []);
 
 };
 export default RecordProgress;

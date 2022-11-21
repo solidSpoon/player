@@ -40,6 +40,7 @@ export default class Player extends Component<PlayerParam, PlayerState> {
         if (time === undefined) {
             console.log('time undefined, cannot seekTo')
         }
+        console.log('seek time>>> ', time)
         player.seekTo(time, "seconds");
     }
 
@@ -56,7 +57,6 @@ export default class Player extends Component<PlayerParam, PlayerState> {
                     fileName: this.props.videoFile.fileName
                 }
         }).then((response) => {
-            console.log(response);
             this.seekTo(response.data.progress);
         });
         this.lastFile = file;
