@@ -47,7 +47,7 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
 
     componentDidMount() {
         this.initSubtitles();
-        this.timer = setInterval(() => this.interval(this.intervalParam), 1000);
+        this.timer = setInterval(() => this.interval(this.intervalParam), 50);
     }
 
     public jumpNext(): void {
@@ -63,21 +63,29 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
         if (target === undefined) {
             target = this.getCurrentSentence();
         }
-        this.jumpTo(target)
+        this.jumpTo(target);
+    }
+
+    public repeat() {
+        this.jumpTo(this.getCurrentSentence());
     }
 
     private jumpTo(sentence: SentenceT) {
-        if (sentence === undefined || sentence === this.currentSentence) {
+        if (sentence === undefined) {
             return;
         }
-        sentence.element.current.show();
-        if (this.currentSentence !== undefined) {
-            this.currentSentence.element.current.hide();
+
+        if (sentence !== this.currentSentence) {
+            sentence.element.current.show();
+            if (this.currentSentence !== undefined) {
+                this.currentSentence.element.current.hide();
+            }
         }
-        this.props.onCurrentSentenceChange(sentence);
-        this.props.seekTo(sentence.timeStart);
         this.currentSentence = sentence;
         this.currentSentenceUpdateTime = Date.now();
+
+        this.props.onCurrentSentenceChange(sentence);
+        this.props.seekTo(sentence.timeStart);
     }
 
     private intervalParam: IntervalParam = {
@@ -92,6 +100,9 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
         }
         const find: SentenceT = this.getCurrentSentence();
         console.log('find', find);
+        if (find === this.currentSentence) {
+            return;
+        }
         this.jumpTo(find);
     }
 
@@ -167,5 +178,6 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
             {this.subtitleItems()}
         </div>
     }
+
 
 }

@@ -23,6 +23,7 @@
     "react-keyevent": "^1.1.0",
     "react-player": "^2.11.0",
     "react-smooth-scroll-hook": "^1.3.4",
+    "scroll-into-view": "^1.16.2",
     "tencentcloud-sdk-nodejs": "^4.0.480"
   },
   "devDependencies": {

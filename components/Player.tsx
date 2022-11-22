@@ -7,17 +7,11 @@ import FileT from "../lib/param/FileT";
 interface PlayerParam {
     videoFile: FileT;
     onProgress: (time: number) => void;
-    onPlayingStateChange: (state: playState) => void;
     onTotalTimeChange: (time: number) => void;
 }
 
-export enum playState {
-    play = 1,
-    pause = 0
-}
-
 interface PlayerState {
-
+    playing: boolean
 }
 
 export default class Player extends Component<PlayerParam, PlayerState> {
@@ -26,6 +20,9 @@ export default class Player extends Component<PlayerParam, PlayerState> {
     constructor(props) {
         super(props);
         this.playerRef = React.createRef<ReactPlayer>();
+        this.state = {
+            playing: true
+        }
     }
 
     getPlayer = () => {
@@ -44,8 +41,26 @@ export default class Player extends Component<PlayerParam, PlayerState> {
         player.seekTo(time, "seconds");
     }
 
+    public play() {
+        this.setState({
+            playing: true
+        })
+    }
+
+    public pause() {
+        this.setState({
+            playing: false
+        })
+    }
+
+    public change() {
+        this.setState({
+            playing: !this.state.playing
+        })
+    }
+
     private lastFile: FileT;
-    private onReady = (file: FileT) => {
+    private jumpToHistoryProgress = (file: FileT) => {
         console.log('onready', file.fileName)
         if (file === this.lastFile) {
             return;
@@ -72,7 +87,7 @@ export default class Player extends Component<PlayerParam, PlayerState> {
                 ref={this.playerRef}
                 url={this.props.videoFile.objectUrl ? this.props.videoFile.objectUrl : ""}
                 className={"react-player" + style.player}
-                playing={true}
+                playing={this.state.playing}
                 controls={false}
                 width="100%"
                 height="100%"
@@ -83,9 +98,7 @@ export default class Player extends Component<PlayerParam, PlayerState> {
                 onDuration={duration => {
                     this.props.onTotalTimeChange(duration)
                 }}
-                onPlay={() => this.props.onPlayingStateChange(playState.play)}
-                onPause={() => this.props.onPlayingStateChange(playState.pause)}
-                onReady={() => this.onReady(this.props.videoFile)}
+                onReady={() => this.jumpToHistoryProgress(this.props.videoFile)}
             />
         )
     }

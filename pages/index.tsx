@@ -1,34 +1,12 @@
 import React, {Component, ReactElement, useEffect, useRef, useState} from 'react'
-import Player, {playState} from "../components/Player";
+import Player from "../components/Player";
 import Subtitle from "../components/Subtitle";
-import MainSubtitle from "../components/MainSubt";
-import Keyevent from "react-keyevent";
 import UploadPhoto from "../components/UplodeButton";
-import ReactDOM, {createRoot} from 'react-dom/client';
-import parseSrtSubtitles from "../lib/parseSrt";
-import axios from "axios";
-import TransFiller from "../lib/TransFiller";
 import SentenceT from "../lib/param/SentenceT";
-import KeyListener from "../lib/KeyListener";
 import BorderProgressBar from "../components/BorderProgressBar";
-import PlayTime from "../components/PlayTime";
 import FileT, {FileType} from "../lib/param/FileT";
-import RecordProgress from '../lib/RecordProgress';
-
-/**
- *     const playerRef = useRef<Player>()
- *     const currentTimeState = useState(0);
- *     const [ct] = currentTimeState;
- *     const currentSubtleState = useState<SentenceT>();
- *     const videoFileState = useState<FileT>();
- *     const [videoFile] = videoFileState;
- *     const playingState = useState<boolean>(true);
- *     const srcState = useState<FileT>();
- *     const [srcFile] = srcState;
- *     const subtitleState = useState<SentenceT[]>([]);
- *     const [subtitles, setSubtitles] = subtitleState;
- *     const totalTmeState = useState<number>();
- */
+import GlobalShortCut, {JumpPosition} from "../components/GlobalShortCut";
+import MainSubtitle from "../components/MainSubtitle";
 
 interface HomeState {
     /**
@@ -41,6 +19,7 @@ interface HomeState {
      * @private
      */
     subtitleFile: FileT;
+
 }
 
 export default class Home extends Component<any, HomeState> {
@@ -55,20 +34,20 @@ export default class Home extends Component<any, HomeState> {
      */
     private playerRef: React.RefObject<Player>;
     /**
-     * 当前字幕行
-     * @private
-     */
-    private currentSentence: SentenceT;
-    /**
-     * 是否在播放
-     * @private
-     */
-    private isPlaying: boolean;
-    /**
      * 视频时长
      * @private
      */
     private totalTime: number;
+    /**
+     * 侧边字幕组件引用
+     * @private
+     */
+    private subtitleRef: React.RefObject<Subtitle>;
+    /**
+     * 主字幕组件引用
+     * @private
+     */
+    private mainSubtitleRef: React.RefObject<MainSubtitle>;
 
 
     constructor(props) {
@@ -76,35 +55,12 @@ export default class Home extends Component<any, HomeState> {
         this.progress = 0;
         this.totalTime = 0;
         this.playerRef = React.createRef<Player>();
-        this.currentSentence = undefined;
-        this.isPlaying = undefined;
+        this.subtitleRef = React.createRef<Subtitle>();
+        this.mainSubtitleRef = React.createRef<MainSubtitle>();
         this.state = {
             videoFile: undefined,
-            subtitleFile: undefined
+            subtitleFile: undefined,
         }
-    }
-
-    playerEle = (): ReactElement => {
-        let ele = <Player
-            ref={this.playerRef}
-            videoFile={this.state.videoFile}
-            onProgress={(time) => this.progress = time}
-            onPlayingStateChange={
-                (state) => {
-                    if (playState.play === state) {
-                        this.isPlaying = true;
-                    }
-                    if (playState.pause === state) {
-                        this.isPlaying = false;
-                    }
-                }
-            }
-            onTotalTimeChange={
-                (time) => {
-                    this.totalTime = time;
-                }
-            }/>;
-        return ele;
     }
 
     private onFileChange = (file: FileT) => {
@@ -121,154 +77,83 @@ export default class Home extends Component<any, HomeState> {
     }
 
     private seekTo = (time) => {
-        this.playerRef.current.seekTo(time)
+        this.playerRef.current.seekTo(time);
+        this.playerRef.current.play();
+    }
+
+    private onSpace() {
+        this.playerRef.current.change();
+    }
+
+    private onJumpTo(position: JumpPosition) {
+        if (this.subtitleRef.current === undefined) {
+            console.log("subtitleRef is empty, can not jump")
+            return;
+        }
+        if (JumpPosition.BEFORE === position) {
+            this.subtitleRef.current.jumpPrev();
+        }
+        if (JumpPosition.AFTER === position) {
+            this.subtitleRef.current.jumpNext();
+        }
+        if (JumpPosition.CURRENT === position) {
+            this.subtitleRef.current.repeat();
+        }
+
+    }
+
+    private changeCurrentSentence(currentSentence: SentenceT) {
+        if (this.mainSubtitleRef === undefined) {
+            return;
+        }
+        this.mainSubtitleRef.current.setState({
+            sentence: currentSentence
+        })
     }
 
     render() {
         return (
             <>
-                <div className='container'
-                     onKeyDown={event => {
-                         console.log(event.key)
-                     }}
-                >
-                    <div className='player' id={"player-id"}>
-                        {this.playerEle()}
+                <GlobalShortCut
+                    onJumpTo={(position) => this.onJumpTo(position)}
+                    onSpace={() => this.onSpace()}>
+
+
+                    <div className='container'
+                         onKeyDown={event => {
+                             console.log(event.key)
+                         }}
+                    >
+                        <div className='player' id={"player-id"}>
+                            <Player
+                                ref={this.playerRef}
+                                videoFile={this.state.videoFile}
+                                onProgress={(time) => this.progress = time}
+                                onTotalTimeChange={(time) => this.totalTime = time}
+                            />
+                        </div>
+                        <div className='subtitle' id={"subtitle-id"}>
+                            <Subtitle
+                                ref={this.subtitleRef}
+                                getCurrentTime={() => this.progress}
+                                onCurrentSentenceChange={(currentSentence) => this.changeCurrentSentence(currentSentence)}
+                                seekTo={(time) => this.seekTo(time)}
+                                subtitleFile={this.state.subtitleFile}
+                            />
+                        </div>
+                        <div className={'menu'}>
+                            {/*<PlayTime currentTimeState={this.c} totalTimeState={totalTmeState}/>*/}
+                        </div>
+                        <div className='underline-subtitle'>
+                            <MainSubtitle ref={this.mainSubtitleRef}/>
+                            <UploadPhoto onFileChange={this.onFileChange}/>
+                        </div>
                     </div>
-                    <div className='subtitle' id={"subtitle-id"}>
-                        <Subtitle
-                            getCurrentTime={() => this.progress}
-                            onCurrentSentenceChange={(currentSentence) => this.currentSentence = currentSentence}
-                            seekTo={(time) => this.seekTo(time)}
-                            subtitleFile={this.state.subtitleFile}
-                        />
+                    <div id={'progressBarRef'}>
+                        <BorderProgressBar getCurrentTime={() => this.progress} getTotalTime={() => this.totalTime}/>
                     </div>
-                    <div className={'menu'}>
-                        {/*<PlayTime currentTimeState={this.c} totalTimeState={totalTmeState}/>*/}
-                    </div>
-                    <div className='underline-subtitle'>
-                        {/*<MainSubtitle currentSubtleState={currentSubtleState}/>*/}
-                        <UploadPhoto onFileChange={this.onFileChange}/>
-                    </div>
-                </div>
-                <div id={'progressBarRef'}>
-                    <BorderProgressBar/>
-                </div>
+                </GlobalShortCut>
             </>
         )
     }
 }
-
-// function Home1() {
-//     useEffect(() => {
-//         if (videoFile !== undefined) {
-//             const newEle =
-//                 <Player
-//                     videoFile={videoFile}
-//                     onProgress={(time) => currentTimeState[1](time)}
-//                     onPlayingStateChange={
-//                         (state) => {
-//                             if (playState.play === state) {
-//                                 playingState[1](true);
-//                             }
-//                             if (playState.pause === state) {
-//                                 playingState[1](false);
-//                             }
-//                         }
-//                     }
-//                     onTotalTimeChange={
-//                         (time) => {
-//                             totalTmeState[1](time);
-//                         }
-//                     }/>;
-//             const container = document.getElementById("player-id");
-//             const root = createRoot(container); // createRoot(container!) if you use TypeScript
-//             root.render(newEle);
-//         }
-//     }, [videoFile])
-//
-//
-//     useEffect(() => {
-//         if (srcFile !== undefined) {
-//
-//             axios
-//                 .get(srcFile.objectUrl)
-//                 .then(function (response) {
-//                     updateSubtitle(response.data, srcFile)
-//                 })
-//                 .catch(function (error) {
-//                     console.log(error);
-//                 });
-//         }
-//     }, [srcFile]);
-//
-//     const updateSubtitle = (str: string, fileUrl: FileT): void => {
-//         const srtSubtitles = parseSrtSubtitles(str);
-//         srtSubtitles.forEach(item => item.fileUrl = fileUrl.objectUrl)
-//         new TransFiller(srtSubtitles).fillTranslate();
-//         setSubtitles(srtSubtitles);
-//     };
-//
-//     const [subtitleRoot, setSubtitleRoot] = useState(null);
-//     // const keyListener = new KeyListener(
-//     //     currentSubtleState,
-//     //     pushTimeState,
-//     //     jumpTextState,
-//     //     jumpTimeState,
-//     //     // playerRef,
-//     //     playingState
-//     // );
-//     useEffect(() => {
-//         if (subtitles === undefined) {
-//             return;
-//         }
-//         let root = subtitleRoot;
-//         if (root === null) {
-//             const container = document.getElementById("subtitle-id");
-//             root = createRoot(container);
-//             setSubtitleRoot(root);
-//         }
-//         const newEle =
-//             <Subtitle
-//                 getCurrentTime={() => ct}
-//                 onCurrentSentenceChange={(currentSentence) => currentSubtleState[1](currentSentence)}
-//                 seekTo={(time) => playerRef.current.seekTo(time)}
-//                 subtitleFile={srcFile}
-//             />
-//         const element = subtitleRef.current.render();
-//         console.log(element)
-//         root.render(element);
-//         console.log('update')
-//
-//     }, [subtitles]);
-//
-//     RecordProgress({
-//         getCurrentProgress: () => ctr.current,
-//         getCurrentVideoFile: () => vfr.current
-//
-//     });
-//     const ctr = useRef<number>();
-//     const vfr = useRef<FileT>();
-//     useEffect(() => {
-//         ctr.current = ct;
-//         vfr.current = videoFile;
-//     }, [ct, videoFile])
-//
-//
-//     const progressRoot = useRef();
-//     useEffect(() => {
-//         if (progressRoot.current === undefined) {
-//             const ele = document.getElementById('progressBarRef')
-//             progressRoot.current = ReactDOM.createRoot(ele);
-//         }
-//
-//         // @ts-ignore
-//         progressRoot.current.render(
-//             <BorderProgressBar currentTime={ct} totalTime={totalTmeState[0]}/>
-//         )
-//     }, [ct])
-//
-//
-//     const subtitleRef = useRef<Subtitle>()
-//
-// }
