@@ -7,6 +7,8 @@ import BorderProgressBar from "../components/BorderProgressBar";
 import FileT, {FileType} from "../lib/param/FileT";
 import GlobalShortCut, {JumpPosition} from "../components/GlobalShortCut";
 import MainSubtitle from "../components/MainSubtitle";
+import PlayTime from "../components/PlayTime";
+import RecordProgress from "../lib/RecordProgress";
 
 interface HomeState {
     /**
@@ -124,6 +126,8 @@ export default class Home extends Component<any, HomeState> {
                              console.log(event.key)
                          }}
                     >
+                        <RecordProgress getCurrentProgress={() => this.progress}
+                                        getCurrentVideoFile={() => this.state.videoFile}/>
                         <div className='player' id={"player-id"}>
                             <Player
                                 ref={this.playerRef}
@@ -142,7 +146,7 @@ export default class Home extends Component<any, HomeState> {
                             />
                         </div>
                         <div className={'menu'}>
-                            {/*<PlayTime currentTimeState={this.c} totalTimeState={totalTmeState}/>*/}
+                            <PlayTime getTotalTime={() => this.totalTime} getProgress={() => this.progress}/>
                         </div>
                         <div className='underline-subtitle'>
                             <MainSubtitle ref={this.mainSubtitleRef}/>

@@ -1,20 +1,46 @@
-import {ReactElement, useEffect, useRef, useState} from "react";
+import {Component, ReactElement, useEffect, useRef, useState} from "react";
 import s from './PlayTime.module.css'
 
-const PlayTime = ({
-                      currentTimeState,
-                      totalTimeState
-                  }): ReactElement => {
-    const [currentTime] = currentTimeState;
-    const [totalTime] = totalTimeState;
-    const nowR = useRef<HTMLElement>();
-    const totalR = useRef<HTMLElement>();
-    useEffect(() => {
-        nowR.current.innerText = secondToDate(currentTime);
-        totalR.current.innerText = secondToDate(totalTime)
-    }, [currentTime, totalTime])
+interface PlayTimeParam {
+    getProgress: () => number,
+    getTotalTime: () => number
+}
 
-    function secondToDate(seconds: number = 0) {
+interface PlayerTimeState {
+    totalTime: string,
+    progress: string
+}
+
+export default class PlayTime extends Component<PlayTimeParam, PlayerTimeState> {
+    private interval: NodeJS.Timer;
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            totalTime: "",
+            progress: ""
+        }
+    }
+
+    componentDidMount() {
+        this.interval = setInterval(this.task, 100);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+    private task = () => {
+        this.setState({
+            totalTime: this.secondToDate(this.props.getTotalTime()),
+            progress: this.secondToDate(this.props.getProgress())
+        })
+    }
+
+    private secondToDate(seconds: number = 0) {
+        if (seconds === undefined) {
+            return "00:00:00"
+        }
         let h: number = Math.floor(seconds / 60 / 60 % 24)
         let hs = h < 10 ? '0' + h : h
         let m = Math.floor(seconds / 60 % 60)
@@ -24,13 +50,16 @@ const PlayTime = ({
         return hs + ":" + ms + ":" + ss + "";
     }
 
-
-    return <>
-        <div className={s.timeContainer} >
-            <div className={s.time}>
-                <span ref={nowR} className={s.timeText}></span> / <span ref={totalR} className={s.timeText}></span>
+    render() {
+        return <>
+            <div className={s.timeContainer}>
+                <div className={s.time}>
+                    <span className={s.timeText}>{this.state.progress}</span>
+                    &nbsp;/&nbsp;
+                    <span className={s.timeText}>{this.state.totalTime}</span>
+                </div>
             </div>
-        </div>
-    </>
+        </>
+    }
+
 }
-export default PlayTime;

@@ -13,9 +13,10 @@ const RecordProgress = (props: RecordProgressParam) => {
             if (props.getCurrentVideoFile() === undefined || props.getCurrentProgress() === undefined) {
                 return;
             }
+            console.log("update progress");
             const fileName = props.getCurrentVideoFile().fileName;
             const progress = props.getCurrentProgress();
-            console.log("recordProgress",fileName, progress)
+            console.log("recordProgress", fileName, progress)
             axios.get('/api/updateProgress', {
                 params:
                     {
@@ -25,12 +26,12 @@ const RecordProgress = (props: RecordProgressParam) => {
             });
         }
 
-        const interval = setInterval(method,1000);
+        const interval = setInterval(method, 1000);
         return () => {
             clearInterval(interval);
         }
     }, []);
-
+    return <></>
 };
 export default RecordProgress;
 

@@ -1,5 +1,5 @@
 import ProgressBar from "@ramonak/react-progress-bar";
-import {Component, ReactElement} from "react";
+import {Component} from "react";
 import s from './BorderProgressBar.module.css';
 
 interface BorderProgressBarParam {
