@@ -78,18 +78,15 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
         if (sentence === undefined) {
             return;
         }
-
-        if (sentence !== this.currentSentence) {
-            sentence.element.current.show();
-            if (this.currentSentence !== undefined) {
-                this.currentSentence.element.current.hide();
-            }
-        }
-        this.currentSentence = sentence;
+        this.updateTo(sentence);
         this.currentSentenceUpdateTime = Date.now();
-
-        this.props.onCurrentSentenceChange(sentence);
         this.props.seekTo(sentence.timeStart);
+    }
+
+    private updateTo(sentence: SentenceT) {
+        if (sentence === undefined || sentence === this.currentSentence) {
+            return;
+        }
 
         if (!isVisible(sentence.divElement.current)) {
             this.parentRef.current.scrollTo({
@@ -97,6 +94,12 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
                 behavior: "smooth"
             })
         }
+        sentence.element.current.show();
+        if (this.currentSentence !== undefined) {
+            this.currentSentence.element.current.hide();
+        }
+        this.currentSentence = sentence;
+        this.props.onCurrentSentenceChange(sentence);
     }
 
     private intervalParam: IntervalParam = {
@@ -113,7 +116,7 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
         if (find === this.currentSentence) {
             return;
         }
-        this.jumpTo(find);
+        this.updateTo(find);
     }
 
     private initSubtitles() {
