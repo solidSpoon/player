@@ -47,7 +47,7 @@ const TranslatableLine = (props: TranslatableSubtitleLineParam) => {
     }
 
     return (
-        <div className={props.className ? props.className : null}>
+        <div key={1} className={props.className ? props.className : null}>
             {ele()}
         </div>
     )

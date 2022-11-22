@@ -44,6 +44,9 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
 
     componentDidUpdate(prevProps) {
         if (prevProps.subtitleFile === this.props.subtitleFile) {
+            this.state.subtitles?.forEach(item => {
+                item.element?.current?.hide();
+            })
             return;
         }
         this.initSubtitles();
@@ -94,12 +97,14 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
                 behavior: "smooth"
             })
         }
-        sentence.element.current.show();
-        if (this.currentSentence !== undefined) {
-            this.currentSentence.element.current.hide();
-        }
+
+        sentence?.element?.current?.show();
+        this.currentSentence?.element?.current?.hide();
+
         this.currentSentence = sentence;
         this.props.onCurrentSentenceChange(sentence);
+
+
     }
 
     private intervalParam: IntervalParam = {
@@ -174,7 +179,7 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
                         ref={ref}
                         sentence={item}
                         onClick={(sentence) => this.jumpTo(sentence)}
-                        key={index.toString()}/>
+                        itemKey={index.toString()}/>
                 </div>
             }
         );

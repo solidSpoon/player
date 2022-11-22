@@ -21,13 +21,13 @@ export default class MainSubtitle extends Component<any, MainSubtitleState> {
             return;
         }
         const elements: ReactElement[] = [];
-        elements.push(<TranslatableLine text={this.state.sentence.text} className={style.source}/>
+        elements.push(<TranslatableLine key={1} text={this.state.sentence.text} className={style.source}/>
         )
         if (this.state.sentence.msTranslate !== undefined) {
-            elements.push(<div className={style.destM}>{this.state.sentence.msTranslate}</div>)
+            elements.push(<div key={2} className={style.destM}>{this.state.sentence.msTranslate}</div>)
         }
         if (this.state.sentence.textZH !== undefined) {
-            elements.push(<div className={style.destH}>{this.state.sentence.textZH}</div>)
+            elements.push(<div key={3} className={style.destH}>{this.state.sentence.textZH}</div>)
         }
         return elements;
     }

@@ -5,7 +5,7 @@ import style from "./Subtitle.module.css";
 interface SideSentenceParam {
     sentence: SentenceT;
     onClick: (sentence: SentenceT) => void;
-    key: string;
+    itemKey: string;
 }
 
 export default class SideSentence extends Component<SideSentenceParam, any> {
@@ -26,7 +26,7 @@ export default class SideSentence extends Component<SideSentenceParam, any> {
 
     render() {
         return <div
-            key={this.props.key}
+            key={this.props.itemKey}
             className={style.subtitleItem}
             onClick={() => {
                 this.props.onClick(this.props.sentence)
