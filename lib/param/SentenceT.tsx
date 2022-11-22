@@ -1,4 +1,4 @@
-import {MutableRefObject, ReactElement} from "react";
+import {LegacyRef, MutableRefObject, ReactElement, Ref} from "react";
 import SideSentence from "../../components/SideSentence";
 
 class SentenceT {
@@ -31,6 +31,7 @@ class SentenceT {
     public getNestItem = (): SentenceT => {
         return this.nextItem;
     }
+    divElement: MutableRefObject<HTMLDivElement>;
 
     constructor() {
     }

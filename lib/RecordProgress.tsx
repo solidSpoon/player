@@ -15,7 +15,7 @@ const RecordProgress = (props: RecordProgressParam) => {
             }
             const fileName = props.getCurrentVideoFile().fileName;
             const progress = props.getCurrentProgress();
-            console.log(fileName, progress)
+            console.log("recordProgress",fileName, progress)
             axios.get('/api/updateProgress', {
                 params:
                     {

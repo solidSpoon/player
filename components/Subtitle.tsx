@@ -7,6 +7,8 @@ import axios from "axios";
 import parseSrtSubtitles from "../lib/parseSrt";
 import TransFiller from "../lib/TransFiller";
 import SideSentence from "./SideSentence";
+import scrollIntoView from "scroll-into-view"
+import {isVisible} from "../lib/isVisible";
 
 interface SubtitleParam {
     subtitleFile: FileT,
@@ -28,6 +30,7 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
     private timer: NodeJS.Timer;
     private currentSentence: SentenceT;
     private currentSentenceUpdateTime: number;
+    private parentRef: React.RefObject<HTMLDivElement>;
 
     constructor(props) {
         super(props);
@@ -36,6 +39,7 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
         }
         this.currentSentence = undefined;
         this.currentSentenceUpdateTime = Date.now();
+        this.parentRef = React.createRef<HTMLDivElement>();
     }
 
     componentDidUpdate(prevProps) {
@@ -86,6 +90,13 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
 
         this.props.onCurrentSentenceChange(sentence);
         this.props.seekTo(sentence.timeStart);
+
+        if (!isVisible(sentence.divElement.current)) {
+            this.parentRef.current.scrollTo({
+                top: sentence.divElement.current.offsetTop - 50,
+                behavior: "smooth"
+            })
+        }
     }
 
     private intervalParam: IntervalParam = {
@@ -99,7 +110,6 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
             return;
         }
         const find: SentenceT = this.getCurrentSentence();
-        console.log('find', find);
         if (find === this.currentSentence) {
             return;
         }
@@ -154,11 +164,15 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
         return sentences.map((item, index) => {
                 const ref = React.createRef<SideSentence>();
                 item.element = ref;
-                return <SideSentence
-                    ref={ref}
-                    sentence={item}
-                    onClick={(sentence) => this.jumpTo(sentence)}
-                    key={index.toString()}/>
+                const divRef = React.createRef<HTMLDivElement>();
+                item.divElement = divRef;
+                return <div key={index} ref={divRef}>
+                    <SideSentence
+                        ref={ref}
+                        sentence={item}
+                        onClick={(sentence) => this.jumpTo(sentence)}
+                        key={index.toString()}/>
+                </div>
             }
         );
     }
@@ -166,7 +180,11 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
     private getCurrentSentence(): SentenceT {
         const isOverdue = Date.now() - this.currentSentenceUpdateTime > 600;
         if (isOverdue || this.currentSentence === undefined) {
-            return searchSubtitle(this.state.subtitles, this.props.getCurrentTime(), this.currentSentence);
+            const searchRes = searchSubtitle(this.state.subtitles, this.props.getCurrentTime(), this.currentSentence);
+            if (searchRes !== undefined) {
+                return searchRes;
+            }
+            return this.currentSentence;
         }
         return this.currentSentence;
     }
@@ -174,7 +192,7 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
 
     render() {
         console.log('Subtitle render')
-        return <div className={style.subtitleBox} id={"Subtitle-subt"}>
+        return <div className={style.subtitleBox} ref={this.parentRef}>
             {this.subtitleItems()}
         </div>
     }
