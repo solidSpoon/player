@@ -19,37 +19,25 @@ class TransFiller {
             if (!buffer.canAdd(item.text)) {
                 buffer.next = new Buf(index);
                 buffer = buffer.next;
-                buffer.delay = 1;
             }
             buffer.add(item.text);
         })
-        this.delayTrans(root);
+        this.doFillTranslate(root);
     }
 
-
-    delayTrans(buf: Buf): void {
-        if (buf.isEmpty()) {
-            return;
-        }
-        setTimeout(() => this.doFillTranslate(buf), 500);
-    }
 
     doFillTranslate(buf: Buf): void {
-        const start = buf.startIndex;
-        const str = buf.strs;
+        if (buf === undefined || buf.isEmpty()) {
+            return;
+        }
+        const data = {
+            str: buf.strs
+        }
         axios
-            .post('/api/translate', {
-                str: str
-            })
-            .then((response) => {
-                this.processTransResponse(response, start);
-                if (buf["next"] !== undefined) {
-                    this.delayTrans(buf["next"]);
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+            .post('/api/translate', data)
+            .then((response) => this.processTransResponse(response, buf.startIndex))
+            .then(() => setTimeout((buf: Buf) => this.doFillTranslate(buf), 500, buf.next))
+            .catch((error) => console.log(error));
     }
 
     processTransResponse(response, start: number): void {
@@ -65,7 +53,6 @@ class TransFiller {
 
 class Buf {
     startIndex: number;
-    delay: number;
     strs: string[];
     private size: number;
     private readonly max: number;
@@ -73,7 +60,6 @@ class Buf {
 
     constructor(startIndex) {
         this.startIndex = startIndex;
-        this.delay = 0;
         this.strs = [];
         this.size = 0;
         this.max = 2000;
