@@ -134,12 +134,8 @@ export default class Subtitle extends Component<SubtitleParam, SubtitleState> {
         const updateSubtitle = this.updateSubtitle;
         axios
             .get(srcFile.objectUrl)
-            .then(function (response) {
-                updateSubtitle(response.data, srcFile)
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
+            .then((response) => updateSubtitle(response.data, srcFile))
+            .catch((error) => console.log(error));
     }
 
     private updateSubtitle = (str: string, fileUrl: FileT): void => {
