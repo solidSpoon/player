@@ -11,17 +11,21 @@ interface PlayerParam {
 }
 
 interface PlayerState {
-    playing: boolean
+    playing: boolean,
+    showControl: boolean
 }
 
 export default class Player extends Component<PlayerParam, PlayerState> {
     private readonly playerRef: React.MutableRefObject<ReactPlayer | undefined>;
+    private playing: boolean;
 
     constructor(props) {
         super(props);
         this.playerRef = React.createRef<ReactPlayer>();
+        this.playing = true;
         this.state = {
-            playing: true
+            playing: true,
+            showControl: false
         }
     }
 
@@ -88,7 +92,7 @@ export default class Player extends Component<PlayerParam, PlayerState> {
                 url={this.props.videoFile.objectUrl ? this.props.videoFile.objectUrl : ""}
                 className={"react-player" + style.player}
                 playing={this.state.playing}
-                controls={false}
+                controls={this.state.showControl}
                 width="100%"
                 height="100%"
                 progressInterval={50}
@@ -99,7 +103,20 @@ export default class Player extends Component<PlayerParam, PlayerState> {
                     this.props.onTotalTimeChange(duration)
                 }}
                 onReady={() => this.jumpToHistoryProgress(this.props.videoFile)}
+
             />
         )
+    }
+
+    showControl() {
+        this.setState({
+            showControl: true
+        })
+    }
+
+    hideControl() {
+        this.setState({
+            showControl: false
+        })
     }
 }

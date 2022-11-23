@@ -113,51 +113,64 @@ export default class Home extends Component<any, HomeState> {
         })
     }
 
-    render() {
-        return (
-            <>
-                <GlobalShortCut
-                    onJumpTo={(position) => this.onJumpTo(position)}
-                    onSpace={() => this.onSpace()}>
-
-
-                    <div className='container'
-                         onKeyDown={event => {
-                             console.log(event.key)
-                         }}
-                    >
-                        <RecordProgress getCurrentProgress={() => this.progress}
-                                        getCurrentVideoFile={() => this.state.videoFile}/>
-                        <div className='player' id={"player-id"}>
-                            <Player
-                                ref={this.playerRef}
-                                videoFile={this.state.videoFile}
-                                onProgress={(time) => this.progress = time}
-                                onTotalTimeChange={(time) => this.totalTime = time}
-                            />
-                        </div>
-                        <div className='subtitle' id={"subtitle-id"}>
-                            <Subtitle
-                                ref={this.subtitleRef}
-                                getCurrentTime={() => this.progress}
-                                onCurrentSentenceChange={(currentSentence) => this.changeCurrentSentence(currentSentence)}
-                                seekTo={(time) => this.seekTo(time)}
-                                subtitleFile={this.state.subtitleFile}
-                            />
-                        </div>
-                        <div className={'menu'}>
-                            <PlayTime getTotalTime={() => this.totalTime} getProgress={() => this.progress}/>
-                        </div>
-                        <div className='underline-subtitle'>
-                            <MainSubtitle ref={this.mainSubtitleRef}/>
-                            <UploadPhoto onFileChange={this.onFileChange}/>
-                        </div>
-                    </div>
-                    <div id={'progressBarRef'}>
-                        <BorderProgressBar getCurrentTime={() => this.progress} getTotalTime={() => this.totalTime}/>
-                    </div>
-                </GlobalShortCut>
-            </>
-        )
+    private showControl = () => {
+        console.log("showC")
+        this.playerRef.current.showControl();
     }
+    private hideControl = () =>{
+        console.log("hideControl")
+        this.playerRef.current.hideControl();
+}
+render()
+{
+    return (
+        <>
+            <GlobalShortCut
+                onJumpTo={(position) => this.onJumpTo(position)}
+                onSpace={() => this.onSpace()}>
+
+
+                <div className='container'
+                     onKeyDown={event => {
+                         console.log(event.key)
+                     }}
+                >
+                    <RecordProgress getCurrentProgress={() => this.progress}
+                                    getCurrentVideoFile={() => this.state.videoFile}/>
+                    <div
+                        onMouseOver={() => this.showControl()}
+                        onMouseLeave={() => this.hideControl()}
+                        className='player'
+                        id={"player-id"}>
+                        <Player
+                            ref={this.playerRef}
+                            videoFile={this.state.videoFile}
+                            onProgress={(time) => this.progress = time}
+                            onTotalTimeChange={(time) => this.totalTime = time}
+                        />
+                    </div>
+                    <div className='subtitle' id={"subtitle-id"}>
+                        <Subtitle
+                            ref={this.subtitleRef}
+                            getCurrentTime={() => this.progress}
+                            onCurrentSentenceChange={(currentSentence) => this.changeCurrentSentence(currentSentence)}
+                            seekTo={(time) => this.seekTo(time)}
+                            subtitleFile={this.state.subtitleFile}
+                        />
+                    </div>
+                    <div className={'menu'}>
+                        <PlayTime getTotalTime={() => this.totalTime} getProgress={() => this.progress}/>
+                    </div>
+                    <div className='underline-subtitle'>
+                        <MainSubtitle ref={this.mainSubtitleRef}/>
+                        <UploadPhoto onFileChange={this.onFileChange}/>
+                    </div>
+                </div>
+                <div id={'progressBarRef'}>
+                    <BorderProgressBar getCurrentTime={() => this.progress} getTotalTime={() => this.totalTime}/>
+                </div>
+            </GlobalShortCut>
+        </>
+    )
+}
 }
