@@ -92,7 +92,7 @@ export default class Player extends Component<PlayerParam, PlayerState> {
                 url={this.props.videoFile.objectUrl ? this.props.videoFile.objectUrl : ""}
                 className={"react-player" + style.player}
                 playing={this.state.playing}
-                controls={this.state.showControl}
+                controls={false}
                 width="100%"
                 height="100%"
                 progressInterval={50}

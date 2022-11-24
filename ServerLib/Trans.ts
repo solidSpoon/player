@@ -23,6 +23,26 @@ class Trans {
         this.client = new TmtClient(clientConfig);
     }
 
+    public async batchTrans2(source: CacheEntity[]): Promise<CacheEntity[]> {
+        const param = {
+            Source: 'en',
+            Target: 'zh',
+            ProjectId: 0,
+            SourceTextList: source.map(item => item.text)
+        };
+        console.log('do-trans:', param.SourceTextList);
+
+        function fillToSource(data): CacheEntity[] {
+            source.forEach((item, index) => {
+                item.translate = data.TargetTextList[index];
+            })
+            return source;
+        }
+
+        return this.client.TextTranslateBatch(param)
+            .then((data) => fillToSource(data));
+    }
+
     batchTrans(source: CacheEntity[], callback: () => void) {
         console.log('do-trans');
         this.client.TextTranslateBatch({
