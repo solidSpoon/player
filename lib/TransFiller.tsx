@@ -9,36 +9,58 @@ class TransFiller {
     }
 
     /**
-     * public
+     * 填充翻译
      */
-    fillTranslate(): void {
-        let buffer = new Buf(0);
-        const root = buffer;
-        this.subtitles.forEach((item, index) => {
+    public fillTranslate(): void {
+        const buffers = this.splitToBuffers(this.subtitles, 1000);
+        this.batchTranslate(buffers, 300).finally();
+    }
+
+    /**
+     * 字幕转化为 buffer
+     * @param subtitles 字幕行数组
+     * @param capacity 批处理块容量
+     * @private
+     */
+    private splitToBuffers(subtitles: SentenceT[], capacity: number): Buf[] {
+        const buffers: Buf[] = [];
+        let buffer = new Buf(0, capacity);
+        subtitles.forEach((item, index) => {
             item.text = item.text ? item.text : '';
             if (!buffer.canAdd(item.text)) {
-                buffer.next = new Buf(index);
-                buffer = buffer.next;
+                buffers.push(buffer);
+                buffer = new Buf(index, capacity);
             }
             buffer.add(item.text);
         })
-        this.doFillTranslate(root);
+        buffers.push(buffer);
+        return buffers;
     }
 
-
-    doFillTranslate(buf: Buf): void {
-        if (buf === undefined || buf.isEmpty()) {
-            return;
+    /**
+     * 批量翻译
+     * @param buffers Buf[]
+     * @param delay 每次翻译的间隔时间
+     * @private
+     */
+    private async batchTranslate(buffers: Buf[], delay: number): Promise<void> {
+        for (let buffer of buffers) {
+            if (buffer.isEmpty()) {
+                return;
+            }
+            const data = {
+                str: buffer.strs
+            }
+            const response = await axios.post('/api/translate', data);
+            this.processTransResponse(response, buffer.startIndex);
+            await this.sleep(delay);
         }
-        const data = {
-            str: buf.strs
-        }
-        axios
-            .post('/api/translate', data)
-            .then((response) => this.processTransResponse(response, buf.startIndex))
-            .then(() => setTimeout((buf: Buf) => this.doFillTranslate(buf), 500, buf.next))
-            .catch((error) => console.log(error));
     }
+
+    private sleep(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
 
     processTransResponse(response, start: number): void {
         if (response["data"]["success"] === false) {
@@ -49,28 +71,29 @@ class TransFiller {
             this.subtitles[index]["msTranslate"] = item;
         })
     }
+
 }
 
 class Buf {
     startIndex: number;
     strs: string[];
     private size: number;
-    private readonly max: number;
+    private readonly capacity: number;
     next: Buf;
 
-    constructor(startIndex) {
+    constructor(startIndex, capacity: number) {
         this.startIndex = startIndex;
         this.strs = [];
         this.size = 0;
-        this.max = 2000;
+        this.capacity = capacity;
         this.next = undefined;
     }
 
     canAdd(str: string): boolean {
-        const b = this.size + str.length < this.max;
+        const b = this.size + str.length < this.capacity;
         if (!b) {
             if (this.size === 0) {
-                throw 'translate buf: max too small-' + str.length;
+                throw 'translate buf: capacity too small-' + str.length;
             }
         }
         return b;
