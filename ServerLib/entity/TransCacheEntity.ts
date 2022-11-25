@@ -1,13 +1,25 @@
 import BaseCacheEntity from "../basecache/BaseCacheEntity";
-import {BaseCacheConfig} from "../basecache/CacheConfig";
 
+/**
+ * 翻译缓存实体类
+ */
 export default class TransCacheEntity extends BaseCacheEntity<TransCacheEntity> {
-    text: string;
+    /**
+     * 原文
+     */
+    original: string;
+    /**
+     * 译文
+     */
     translate: string;
 
-    constructor(text) {
-        super(text);
-        this.text = text.trim();
+    /**
+     * 构造方法
+     * @param original 原文
+     */
+    constructor(original: string) {
+        super(original);
+        this.original = original.trim();
     }
 
 }

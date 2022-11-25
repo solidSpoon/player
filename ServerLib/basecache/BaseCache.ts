@@ -2,7 +2,9 @@ import Nedb from "nedb";
 import BaseCacheEntity from "./BaseCacheEntity";
 import {BaseCacheConfig} from "./CacheConfig";
 
-
+/**
+ * 公共缓存类
+ */
 export default class BaseCache<E extends BaseCacheEntity<E>> {
     private db: Nedb<E>;
 
@@ -15,8 +17,8 @@ export default class BaseCache<E extends BaseCacheEntity<E>> {
 
     /**
      * 插入或新增
-     * @param entity
-     * @private
+     * @param entity 实体类
+     * @return 影响行数
      */
     public insertOrUpdate(entity: E): Promise<number> {
         if (entity === undefined) {
@@ -43,9 +45,9 @@ export default class BaseCache<E extends BaseCacheEntity<E>> {
     }
 
     /**
-     * 删除
-     * @param entity
-     * @private
+     * 根据 hash 删除
+     * @param entity 实体类
+     * @return 影响行数
      */
     public delete(entity: E): Promise<number> {
         return new Promise((resolve, reject) => {
@@ -64,6 +66,11 @@ export default class BaseCache<E extends BaseCacheEntity<E>> {
 
     }
 
+    /**
+     * 根据 hash 批量删除
+     * @param entities 实体类数组
+     * @return 影响行数
+     */
     public deleteBatch(entities: E[]): Promise<number> {
         if (entities === undefined || entities.length === 0) {
             throw `can not batch delete ${entities}`;
@@ -90,8 +97,9 @@ export default class BaseCache<E extends BaseCacheEntity<E>> {
     }
 
     /**
-     * 用缓存填充对象
-     * @param entity
+     * 查询 hash 对应的缓存
+     * @param entity 查询条件 entity
+     * @return 查询结果
      */
     public loadCache(entity: E): Promise<E[]> {
         const query = {
@@ -110,6 +118,11 @@ export default class BaseCache<E extends BaseCacheEntity<E>> {
         });
     }
 
+    /**
+     * 批量根据 hash 查询缓存
+     * @param entities 查询条件
+     * @return 查询结果
+     */
     public loadBatch(entities: E[]): Promise<E[]> {
         if (entities === undefined || entities.length === 0) {
             throw `can not batch query ${entities}`
@@ -132,6 +145,11 @@ export default class BaseCache<E extends BaseCacheEntity<E>> {
         });
     }
 
+    /**
+     * 批量插入
+     * @param entities 实体类数组
+     * @return 插入后的实体类
+     */
     public insertBatch(entities: E[]): Promise<E[]> {
         if (entities === undefined || entities.length === 0) {
             throw `can not batch insert: ${entities}`

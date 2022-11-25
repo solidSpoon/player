@@ -10,6 +10,11 @@ interface TranslateParam {
     }
 }
 
+/**
+ * AI 翻译
+ * @param req
+ * @param res
+ */
 export default async function handler(req: TranslateParam, res) {
 
     let sourceArr: cacheEntity[] = req.body.str.map(item => new TransCacheEntity(item));

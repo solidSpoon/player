@@ -21,12 +21,16 @@ class TransApi {
         this.client = new TmtClient(clientConfig);
     }
 
+    /**
+     * 批量翻译
+     * @param source
+     */
     public static async batchTrans(source: TransCacheEntity[]): Promise<TransCacheEntity[]> {
         const param = {
             Source: 'en',
             Target: 'zh',
             ProjectId: 0,
-            SourceTextList: source.map(item => item.text)
+            SourceTextList: source.map(item => item.original)
         };
         console.log('do-trans:', param.SourceTextList);
 
