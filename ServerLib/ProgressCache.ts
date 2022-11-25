@@ -1,6 +1,8 @@
 import CacheEntity from "./CacheEntity";
 import ProgressEntity from "./ProgressEntity";
 import NeDB from "nedb";
+import {string} from "prop-types";
+import crypto from "crypto";
 
 class ProgressCache {
     private static db: NeDB<ProgressEntity>;
@@ -34,23 +36,34 @@ class ProgressCache {
         })
     }
 
-    public static queryProcess(progress: ProgressEntity, callback: () => void) {
-        this.db.find({
-            hash: progress.hash
-        }, function (err, docs) {
-            if (docs.length === 0) {
-                progress.progress = 0;
-                progress.updateDate = Date.now();
-            } else {
-                if (docs.length > 1) {
-                    console.log("progress length bigger than one")
-                }
-                progress.progress = docs[0].progress;
-                progress.updateDate = docs[0].updateDate;
+    public static async queryProcess(progress: ProgressEntity): Promise<void> {
+        const progressEntities: ProgressEntity[] = await this.findProgress(progress.fileName);
+        if (progressEntities.length === 0) {
+            progress.progress = 0;
+            progress.updateDate = Date.now();
+        } else {
+            if (progressEntities.length > 1) {
+                console.log("progress length bigger than one")
             }
-            callback();
+            progress.progress = progressEntities[0].progress;
+            progress.updateDate = progressEntities[0].updateDate;
+        }
+    }
 
-        })
+    private static async findProgress(fileName: string): Promise<ProgressEntity[]> {
+        const query = {
+            hash: this.hash(fileName)
+        }
+        return new Promise<ProgressEntity[]>((resolve, reject) => {
+            this.db.find(query, (err, docs: ProgressEntity[]) => {
+                resolve(docs);
+            })
+        });
+    }
+
+    public static hash(str: string): string {
+        str = str.trim();
+        return crypto.createHash('md5').update(str).digest("hex");
     }
 
 }
