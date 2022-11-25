@@ -2,9 +2,10 @@
 import getConfig from 'next/config'
 import * as tencentcloud from "tencentcloud-sdk-nodejs";
 import {Client} from "tencentcloud-sdk-nodejs/tencentcloud/services/tmt/v20180321/tmt_client";
-import CacheEntity from "./CacheEntity";
+import TransCacheEntity from "./entity/TransCacheEntity";
+import {TextTranslateBatchResponse} from "tencentcloud-sdk-nodejs/src/services/tmt/v20180321/tmt_models";
 
-class Trans {
+class TransApi {
     private static client: Client;
 
     static {
@@ -20,7 +21,7 @@ class Trans {
         this.client = new TmtClient(clientConfig);
     }
 
-    public static async batchTrans(source: CacheEntity[]): Promise<CacheEntity[]> {
+    public static async batchTrans(source: TransCacheEntity[]): Promise<TransCacheEntity[]> {
         const param = {
             Source: 'en',
             Target: 'zh',
@@ -29,17 +30,19 @@ class Trans {
         };
         console.log('do-trans:', param.SourceTextList);
 
-        function fillToSource(data): CacheEntity[] {
-            source.forEach((item, index) => {
-                item.translate = data.TargetTextList[index];
-            })
-            return source;
-        }
 
-        return this.client.TextTranslateBatch(param)
-            .then((data) => fillToSource(data));
+        const transResult: string[] = await this.client.TextTranslateBatch(param)
+            .then((resp: TextTranslateBatchResponse) => resp.TargetTextList);
+        return this.fillToSource(source, transResult);
+    }
+
+    private static fillToSource(source: TransCacheEntity[], result: string[]): TransCacheEntity[] {
+        source.forEach((item, index) => {
+            item.translate = result[index];
+        })
+        return source;
     }
 
 }
 
-export default Trans;
+export default TransApi;
