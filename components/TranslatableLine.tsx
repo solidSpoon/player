@@ -1,6 +1,6 @@
 import axios from "axios";
 import {ReactElement} from "react";
-import s from './TranslatableLine.module.css';
+import s from './css/TranslatableLine.module.css';
 
 interface TranslatableSubtitleLineParam {
     text: string,

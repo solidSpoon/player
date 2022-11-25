@@ -1,6 +1,6 @@
 import ReactPlayer from 'react-player'
 import React, {Component} from 'react'
-import style from './Player.module.css'
+import style from './css/Player.module.css'
 import axios from "axios";
 import FileT from "../lib/param/FileT";
 

@@ -1,5 +1,5 @@
 import {Component, ReactElement, useEffect, useRef, useState} from "react";
-import s from './PlayTime.module.css'
+import s from './css/PlayTime.module.css'
 
 interface PlayTimeParam {
     getProgress: () => number,

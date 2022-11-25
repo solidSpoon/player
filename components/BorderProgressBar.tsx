@@ -1,6 +1,6 @@
 import ProgressBar from "@ramonak/react-progress-bar";
 import {Component} from "react";
-import s from './BorderProgressBar.module.css';
+import s from './css/BorderProgressBar.module.css';
 
 interface BorderProgressBarParam {
     getCurrentTime: () => number,

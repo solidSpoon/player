@@ -1,5 +1,5 @@
 import React, {Component, Fragment} from 'react';
-import style from './UplodeButtom.module.css'
+import style from './css/UplodeButtom.module.css'
 import FileT, {FileType} from "../lib/param/FileT";
 import UploadPhotoParam from "../lib/param/UploadPhotoParam";
 

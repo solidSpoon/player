@@ -1,4 +1,4 @@
-import style from './MainSubt.module.css'
+import style from './css/MainSubt.module.css'
 import React, {Component, ReactElement} from 'react';
 import SentenceT from "../lib/param/SentenceT";
 import TranslatableLine from "./TranslatableLine";

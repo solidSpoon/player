@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import SentenceT from "../lib/param/SentenceT";
-import style from "./Subtitle.module.css";
+import style from "./css/Subtitle.module.css";
 
 interface SideSentenceParam {
     sentence: SentenceT;

@@ -1,4 +1,4 @@
-import style from './Subtitle.module.css'
+import style from './css/Subtitle.module.css'
 import React, {Component, ReactElement} from "react";
 import searchSubtitle from "../lib/searchSubtitle";
 import SentenceT from "../lib/param/SentenceT";
