@@ -35,11 +35,13 @@ export default class Player extends Component<PlayerParam, PlayerState> {
 
     public seekTo(time: number) {
         const player = this.getPlayer();
-        if (player === undefined) {
+        if (player === null) {
             console.log('player undefined, cannot seekTo')
+            return;
         }
         if (time === undefined) {
             console.log('time undefined, cannot seekTo')
+            return;
         }
         console.log('seek time>>> ', time)
         player.seekTo(time, "seconds");

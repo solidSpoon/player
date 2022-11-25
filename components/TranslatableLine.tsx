@@ -36,7 +36,7 @@ const TranslatableLine = (props: TranslatableSubtitleLineParam) => {
     }
     const words: string[] = props.text.split(/((?<=.)(?=[^A-Za-z0-9\-]))|((?<=[^A-Za-z0-9\-])(?=.))/);
 
-    function ele():ReactElement[] {
+    function ele(): ReactElement[] {
         return words.map(w => {
             if (isWord(w)) {
                 return word(w);
