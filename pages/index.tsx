@@ -8,7 +8,7 @@ import FileT, {FileType} from "../lib/param/FileT";
 import GlobalShortCut, {JumpPosition} from "../components/GlobalShortCut";
 import MainSubtitle from "../components/MainSubtitle";
 import PlayTime from "../components/PlayTime";
-import RecordProgress from "../lib/RecordProgress";
+import RecordProgress from "../components/RecordProgress";
 
 interface HomeState {
     /**

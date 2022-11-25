@@ -1,6 +1,6 @@
 import {Component, useEffect, useRef} from "react";
 import axios from "axios";
-import FileT from "./param/FileT";
+import FileT from "../lib/param/FileT";
 
 interface RecordProgressParam {
     getCurrentProgress: () => number;
