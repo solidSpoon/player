@@ -1,6 +1,4 @@
-import CacheEntity from "./CacheEntity";
 import ProgressEntity from "./ProgressEntity";
-import {string} from "prop-types";
 import crypto from "crypto";
 import Nedb from "nedb";
 
@@ -15,45 +13,67 @@ class ProgressCache {
         )
     }
 
-    public static async updateProgress(progress: ProgressEntity): void {
-        progress.updateDate = Date.now();
-        const tdb = this.db;
-        console.log(progress)
-        tdb.update({
-            hash: progress.hash
-        }, progress, {upsert: true, multi: true}, (err, num) => {
-            console.log(num)
-            if (num > 1) {
-                console.log(">1")
-                tdb.remove({
-                    hash: progress.hash
-                }, {multi: true}, function (error, docs) {
-                    console.log(error)
-                    console.log(docs)
-                    tdb.insert(progress);
-                })
-            }
-        })
+    /**
+     * 更新视频进度
+     * @param progress
+     */
+    public static async updateProgress(progress: ProgressEntity): Promise<void> {
+        const updateNum = await this.insertOrUpdate(progress);
+        if (updateNum === 1) {
+            return;
+        }
+        console.log("update progress multi line:", updateNum);
+        await this.deleteProgress(progress.hash);
+        await this.insertOrUpdate(progress);
 
-       const updateNum = await this.updateOne(progress);
-        if (updateNum > 1) {
-            console.log(">1")
-            tdb.remove({
-                hash: progress.hash
-            }, {multi: true}, function (error, docs) {
-                console.log(error)
-                console.log(docs)
-                tdb.insert(progress);
-            })
+    }
+
+    /**
+     * 查询视频进度
+     * @param progress
+     */
+    public static async queryProcess(progress: ProgressEntity): Promise<void> {
+        progress.hash = this.hash(progress.fileName);
+        const progressEntities: ProgressEntity[] = await this.findProgress(progress.hash);
+        if (progressEntities.length === 0) {
+            progress.progress = 0;
+            progress.updateDate = Date.now();
+        } else {
+            if (progressEntities.length > 1) {
+                console.log("progress length bigger than one")
+            }
+            progress.progress = progressEntities[0].progress;
+            progress.updateDate = progressEntities[0].updateDate;
         }
     }
+    /**
+     * 删除
+     * @param hash
+     * @private
+     */
+    private static async deleteProgress(hash: string): Promise<number> {
 
-    private static async deleteProgress(fileName: string) {
+        return new Promise((resolve, reject) => {
+            this.db.remove({
+                hash: hash
+            }, {multi: true}, function (error, count) {
+                if (error !== null) {
+                    console.log(error);
+                }
+                resolve(count)
+            })
+        })
 
     }
 
-    private static async updateOne(progress: ProgressEntity): Promise<number> {
+    /**
+     * 插入或新增
+     * @param progress
+     * @private
+     */
+    private static async insertOrUpdate(progress: ProgressEntity): Promise<number> {
         progress.updateDate = Date.now();
+        progress.hash = this.hash(progress.fileName);
         console.log("update progress", progress);
         const query = {
             hash: progress.hash
@@ -71,23 +91,12 @@ class ProgressCache {
         });
     }
 
-    public static async queryProcess(progress: ProgressEntity): Promise<void> {
-        const progressEntities: ProgressEntity[] = await this.findProgress(progress.fileName);
-        if (progressEntities.length === 0) {
-            progress.progress = 0;
-            progress.updateDate = Date.now();
-        } else {
-            if (progressEntities.length > 1) {
-                console.log("progress length bigger than one")
-            }
-            progress.progress = progressEntities[0].progress;
-            progress.updateDate = progressEntities[0].updateDate;
-        }
-    }
 
-    private static async findProgress(fileName: string): Promise<ProgressEntity[]> {
+
+
+    private static async findProgress(hash: string): Promise<ProgressEntity[]> {
         const query = {
-            hash: this.hash(fileName)
+            hash: hash
         }
         return new Promise<ProgressEntity[]>((resolve, reject) => {
             this.db.find(query, (err, docs: ProgressEntity[]) => {

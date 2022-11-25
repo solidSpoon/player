@@ -11,13 +11,11 @@ interface TranslateParam {
 }
 
 export default async function handler(req: TranslateParam, res) {
-    const c = new Cache();
-    const trans = new Trans();
 
     let sourceArr: cacheEntity[] = req.body.str.map(item => new CacheEntity(item));
-    sourceArr.forEach(item => item.hash = c.hash(item.text));
+    sourceArr.forEach(item => item.hash = Cache.hash(item.text));
 
-    const dbDocs: CacheEntity[] = await c.getCache(sourceArr.map(item => item.text))
+    const dbDocs: CacheEntity[] = await Cache.getCache(sourceArr.map(item => item.text))
         .then(dbDoc => dbDoc.filter(item => item.translate !== undefined));
 
     dbDocs.forEach((doc) => {
@@ -31,8 +29,8 @@ export default async function handler(req: TranslateParam, res) {
             strs: sourceArr.map(doc => doc.translate)
         });
     }
-    const transResult: CacheEntity[] = await trans.batchTrans2(retryDoc);
-    await c.insert(transResult);
+    const transResult: CacheEntity[] = await Trans.batchTrans(retryDoc);
+    await Cache.insert(transResult);
     return res.status(200).json({
         success: true,
         strs: sourceArr.map(doc => doc.translate)

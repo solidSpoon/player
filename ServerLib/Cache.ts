@@ -4,27 +4,27 @@ import crypto from "crypto";
 import {string} from "prop-types";
 
 class Cache {
-    private db: Nedb<CacheEntity>;
+    private static db: Nedb<CacheEntity>;
 
-    constructor() {
+    static {
         this.db = new Nedb<CacheEntity>({
             filename: './db/sentence.db',
             autoload: true,
         });
     }
 
-    public hash(str: string): string {
+    public static hash(str: string): string {
         return crypto.createHash('md5').update(str).digest("hex");
     }
 
-    public async insert(arr: CacheEntity[]): Promise<CacheEntity[]> {
+    public static async insert(arr: CacheEntity[]): Promise<CacheEntity[]> {
         if (arr == undefined || arr.length === 0) {
             return [];
         }
         return await this.insertBatch(arr);
     }
 
-    public async getCache(texts: string[]): Promise<CacheEntity[]> {
+    public static async getCache(texts: string[]): Promise<CacheEntity[]> {
         if (texts === undefined || texts.length === 0) {
             return [];
         }
@@ -39,7 +39,7 @@ class Cache {
         return queryResult;
     }
 
-    private findRepeat(queryResult: CacheEntity[]): CacheEntity[] {
+    private static findRepeat(queryResult: CacheEntity[]): CacheEntity[] {
         const map = new Map<string, number>();
         // queryResult.forEach(item => map.set(item.hash, 0));
         queryResult.forEach(item => map.set(item.hash, (map.get(item.hash) ?? 0) + 1));
@@ -54,7 +54,7 @@ class Cache {
         return toRemoveHash.map(hash => queryResult.find(result => result.hash === hash));
     }
 
-    private queryBatch(texts: string[]): Promise<CacheEntity[]> {
+    private static queryBatch(texts: string[]): Promise<CacheEntity[]> {
         if (texts === undefined || texts.length === 0) {
             return Promise.resolve([]);
         }
@@ -71,7 +71,7 @@ class Cache {
         });
     }
 
-    private insertBatch(entities: CacheEntity[]): Promise<CacheEntity[]> {
+    private static insertBatch(entities: CacheEntity[]): Promise<CacheEntity[]> {
         if (entities == undefined || entities.length === 0) {
             return Promise.resolve([]);
         }
@@ -91,7 +91,7 @@ class Cache {
             }));
     }
 
-    private deleteBatch(hashes: string[]): Promise<number> {
+    private static deleteBatch(hashes: string[]): Promise<number> {
         console.log('delete batch', hashes);
         const query = {
             hash: {
@@ -100,9 +100,9 @@ class Cache {
         }
         return new Promise((resolve, reject) => {
             this.db.remove(query, {
-                multi:true
-            },(err,n) => {
-                console.log('删除数据',n);
+                multi: true
+            }, (err, n) => {
+                console.log('删除数据', n);
                 resolve(n);
             })
         })
