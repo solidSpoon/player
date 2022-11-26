@@ -72,7 +72,7 @@ export default class GlobalShortCut extends Component<GlobalShortCutParam, any> 
                     onUp: this.onUp,
                     onW: this.onW
                 }}
-                needFocusing={true}
+                needFocusing={false}
             >
                 {this.props.children}
             </Keyevent>
